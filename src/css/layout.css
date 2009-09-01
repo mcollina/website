@@ -270,9 +270,22 @@ ul.sideMenu {
   color: #9FF3FF;
 }
 
-#footer a:hover {
+#footer a:hover,
+#footer li.webgen-menu-item-selected {
   color: #9FF3FF;
   background: none;
+}
+
+#footer ul {
+  margin: 0;
+  padding: 0;
+}
+
+#footer li {
+  display: inline;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 }
 
 /**************************************************************
