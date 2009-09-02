@@ -26,8 +26,8 @@
 #content,
 #width {
   /* max-width hack for IE since it doesn't understand the valid css property */
-  width: expression(document.body.clientWidth > 1200 ? "1200px" : "94%");  
-  max-width: 1200px;
+  width: expression(document.body.clientWidth > 900 ? "900px" : "94%");  
+  max-width: 900px;
   margin: 0 auto;
 }
 
