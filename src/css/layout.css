@@ -153,7 +153,8 @@
 
 #mainMenu li a.last {
   margin-right: 0;
-}
+}
+
 
 /**************************************************************
    .sideMenu: The side bar menu
@@ -257,8 +258,7 @@ ul.sideMenu {
   color: #9FF3FF;
 }
 
-#footer a:hover,
-#footer li.webgen-menu-item-selected {
+#footer a:hover {
   color: #9FF3FF;
   background: none;
 }
@@ -273,6 +273,7 @@ ul.sideMenu {
   list-style: none;
   margin: 0;
   padding: 0;
+  padding-left: 1em;
 }
 
 /**************************************************************
