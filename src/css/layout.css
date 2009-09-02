@@ -146,26 +146,13 @@
 }
 
 #mainMenu li a:hover,
-#mainMenu li a.here {
+#mainMenu li a.here,
+#mainMenu .webgen-menu-item-selected a {
   border-top: 5px solid #000;
 }
 
 #mainMenu li a.last {
   margin-right: 0;
-}
-
-#mainMenu li.webgen-menu-item-selected {
-  float: left;
-  margin: 0 2px;
-  padding: 5px 0.5em;
-
-  font: 400 1.6em "trebuchet ms", serif;
-  text-decoration: none;
-  text-transform: lowercase;
-  color: #470052;
-  background: none;
-  
-  border-top: 5px solid #000;
 }
 
 /**************************************************************

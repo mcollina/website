@@ -16,3 +16,5 @@
 # Configuration Option Reference at
 #
 #     http://webgen.rubyforge.org/documentation/reference_configuration.html
+
+website.link_to_current_page: true
