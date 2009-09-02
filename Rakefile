@@ -10,7 +10,7 @@
 
 require 'webgen/webgentask'
 
-task :default => :webgen
+task :default => [:clobber_webgen, :webgen]
 
 Webgen::WebgenTask.new do |website|
   website.clobber_outdir = true
