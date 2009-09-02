@@ -19,7 +19,7 @@ body {
   padding: 0;
   text-align: center;
 
-  font: 400 0.8em verdana, arial, sans-serif;
+  font: 400 1.0em verdana, arial, sans-serif;
   line-height: 170%;
 
   background: #FFF url(../images/bg/header.png) repeat-x top left;
