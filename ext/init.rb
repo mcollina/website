@@ -7,4 +7,8 @@
 #
 # The +config+ variable below can be used to access the Webgen::Configuration object for the current
 # website.
+
 config = Webgen::WebsiteAccess.website.config
+
+require File.dirname(__FILE__) + "/post_adder"
+config['contentprocessor.map']['postadder'] = 'PostAdder'

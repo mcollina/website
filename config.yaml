@@ -26,3 +26,6 @@ tag.langbar.lang_names:
     <img src="{relocatable: images/icons/italian_flag.gif}" alt="Italiano"/>
 
 tag.langbar.process_output: true
+
+default_processing_pipeline:
+  Page: postadder,erb,tags,markdown,blocks

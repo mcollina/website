@@ -1,0 +1,35 @@
+---
+title: Blog
+in_menu: true
+sort_info: 20
+used_nodes: [blog/**/*.html]
+--- pipeline:erb,blocks
+
+<% 
+  posts = context.website.tree.node_access[:path].values.select do |n|
+    Webgen::Path.match(n.path,"/blog/**/*.html")
+  end
+  
+  posts.sort! do |a,b|
+    a.meta_info["created_at"] <=> b.meta_info["created_at"]
+  end
+%>
+
+<webgen:block name="content" chain="blog/default.template;<%= posts.first.alcn %>"/>
+
+<h1>Older Posts</h1>
+
+<p>
+Following is a list of all post entries:
+
+<ul>
+<% posts.each do |post| %>
+<li>
+  <%= context.node.link_to(post) %>
+</li>
+<% end %>
+</ul>
+
+</p>
+
+
