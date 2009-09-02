@@ -2,7 +2,6 @@
 title: Blog
 in_menu: true
 sort_info: 20
-used_nodes: [blog/**/*.html]
 --- pipeline:erb,blocks
 
 <% 

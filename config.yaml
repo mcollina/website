@@ -28,4 +28,4 @@ tag.langbar.lang_names:
 tag.langbar.process_output: true
 
 default_processing_pipeline:
-  Page: postadder,erb,tags,markdown,blocks
+  Page: translator,erb,tags,markdown,blocks

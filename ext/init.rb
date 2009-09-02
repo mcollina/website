@@ -10,5 +10,7 @@
 
 config = Webgen::WebsiteAccess.website.config
 
-require File.dirname(__FILE__) + "/post_adder"
-config['contentprocessor.map']['postadder'] = 'PostAdder'
+require File.dirname(__FILE__) + "/translator"
+config['contentprocessor.map']['translator'] = 'Translator'
+
+config.translator.languages = ["en", "it"]
