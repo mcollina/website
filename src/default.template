@@ -74,6 +74,7 @@
       <li><a href="http://fullahead.org/contact.html" title="Get in touch" class="last">Mail</a></li>
     </ul>
     -->
+    <span class="floatRight">{langbar:}</span>
   </div>
 
 

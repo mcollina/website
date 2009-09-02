@@ -18,3 +18,11 @@
 #     http://webgen.rubyforge.org/documentation/reference_configuration.html
 
 website.link_to_current_page: true
+
+tag.langbar.lang_names:
+  en: |
+    <img src="{relocatable: images/icons/english_flag.gif}" alt="English"/>
+  it: |
+    <img src="{relocatable: images/icons/italian_flag.gif}" alt="Italiano"/>
+
+tag.langbar.process_output: true
