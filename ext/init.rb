@@ -10,7 +10,6 @@
 
 config = Webgen::WebsiteAccess.website.config
 
-require File.dirname(__FILE__) + "/translator"
-config['contentprocessor.map']['translator'] = 'Translator'
+load File.dirname(__FILE__) + "/translator.rb"
 
 config.translator.languages = ["en", "it"]
