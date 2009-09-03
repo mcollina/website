@@ -9,6 +9,8 @@
 #
 
 require 'webgen/webgentask'
+require 'net/ssh'
+require 'net/scp'
 
 task :default => [:clobber_webgen, :webgen]
 
@@ -40,5 +42,28 @@ task :auto_webgen do
     time = Time.now
     old_paths = paths
     sleep 2
+  end
+end
+
+HOST = "95.154.208.211"
+USER = "matteo"
+GROUP = "www-data"
+REMOTE_DIR = "/var/www/matteocollina.eu.org"
+
+desc 'Upload the site'
+task :deploy => :default do
+  Net::SSH.start(HOST, USER) do |ssh|
+    puts "Removing #{REMOTE_DIR}"
+    ssh.exec! "rm -rf #{REMOTE_DIR}/*"
+
+    Net::SCP.start(HOST, USER) do |scp|
+      Dir.glob("out/*") do |filename|
+        puts "Uploading recursively #{filename}"
+        scp.upload! filename,  REMOTE_DIR, :recursive => true
+      end
+    end
+
+    puts "Changing group to #{GROUP}"
+    ssh.exec! "chgrp #{GROUP} #{REMOTE_DIR} -R"
   end
 end
