@@ -2,7 +2,7 @@
 title: Blog
 in_menu: true
 sort_info: 20
---- pipeline:translator,erb,blocks
+--- pipeline:translator,tags,erb,blocks
 
 <% 
   posts = context.website.tree.node_access[:path].values.select do |n|
@@ -16,11 +16,10 @@ sort_info: 20
 
 <webgen:block name="content" chain="blog/default.template;<%= posts.first.alcn %>"/>
 
-<h1>Older Posts</h1>
+<h1>{t:blog.oldpost.title}</h1>
 
 <p>
-Following is a list of all post entries:
-
+{t:blog.oldpost.content}
 <ul>
 <% posts.each do |post| %>
 <li>

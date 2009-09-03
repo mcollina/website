@@ -13,3 +13,6 @@ config = Webgen::WebsiteAccess.website.config
 load File.dirname(__FILE__) + "/translator.rb"
 
 config.translator.languages = ["en", "it"]
+
+
+load File.dirname(__FILE__) + "/i18n.rb"
