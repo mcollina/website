@@ -1,0 +1,10 @@
+---
+title: "Il Blog di Matteo Collina"
+description: Un altro blog che parla di tecnologia..
+site_url: http://matteocollina.eu.org/
+author: Matteo Collina
+author_url: http://matteocollina.eu.org/
+number_of_entries: 10
+rss: true
+atom: false
+entries: [blog/*.it.html]

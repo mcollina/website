@@ -1,0 +1,10 @@
+---
+title: "Matteo Collina's Blog"
+description: Just another blog about technology
+site_url: http://matteocollina.eu.org/
+author: Matteo Collina
+author_url: http://matteocollina.eu.org/
+number_of_entries: 10
+rss: true
+atom: false
+entries: [blog/*.en.html]
