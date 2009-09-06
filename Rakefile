@@ -51,7 +51,7 @@ task :clear_and_run => [:clobber_webgen, :webgen]
 HOST = "95.154.208.211"
 USER = "matteo"
 GROUP = "www-data"
-REMOTE_DIR = "/var/www/matteocollina.eu.org"
+REMOTE_DIR = "/var/www/mysite"
 
 desc 'Upload the site'
 task :deploy => :default do
