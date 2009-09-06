@@ -6,8 +6,10 @@ modified_at: 2008-08-14 10:25:34 +01:00
 
 this is a try
 
-![]({relocatable: sample.jpg})
+# prova prova
+
+![]({relocatable: /blog/sample.jpg})
 
 
-[![]({relocatable: sample.thumb.jpg})]({relocatable: sample.jpg})
+[![]({relocatable: /blog/sample.thumb.jpg})]({relocatable: /blog/sample.jpg})
 

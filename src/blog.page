@@ -2,7 +2,7 @@
 title: Blog
 in_menu: true
 sort_info: 20
---- pipeline:translator,tags,erb,blocks
+--- pipeline:translator,erb,tags,maruku
 
 <% 
   posts = context.website.tree.node_access[:path].values.select do |n|
@@ -12,9 +12,13 @@ sort_info: 20
   posts.sort! do |a,b|
     a.meta_info["created_at"] <=> b.meta_info["created_at"]
   end
+
+  template = context.website.tree.node_access[:path]["/blog/default.template"]
 %>
 
-<webgen:block name="content" chain="blog/default.template;<%= posts.first.alcn %>"/>
+<h1><%= posts.first["title"] %></h1>
+
+<%= posts.first.node_info[:page].blocks["content"].content %>
 
 <h1>{t:blog.oldpost.title}</h1>
 
