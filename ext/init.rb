@@ -16,3 +16,5 @@ config.translator.languages = ["en", "it"]
 
 
 load File.dirname(__FILE__) + "/i18n.rb"
+
+load File.dirname(__FILE__) + "/thumbnailer.rb"

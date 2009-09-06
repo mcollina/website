@@ -12,7 +12,7 @@ require 'webgen/webgentask'
 require 'net/ssh'
 require 'net/scp'
 
-task :default => [:clobber_webgen, :webgen]
+task :default => :webgen
 
 Webgen::WebgenTask.new do |website|
   website.clobber_outdir = true
@@ -44,6 +44,9 @@ task :auto_webgen do
     sleep 2
   end
 end
+
+desc "Runs both clobber_webgen and webgen tasks"
+task :clear_and_run => [:clobber_webgen, :webgen]
 
 HOST = "95.154.208.211"
 USER = "matteo"

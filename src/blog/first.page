@@ -6,3 +6,8 @@ modified_at: 2008-08-14 10:25:34 +01:00
 
 this is a try
 
+![]({relocatable: sample.jpg})
+
+
+[![]({relocatable: sample.thumb.jpg})]({relocatable: sample.jpg})
+
