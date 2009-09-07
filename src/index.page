@@ -3,13 +3,11 @@ title: Home
 in_menu: true
 sort_info: 10
 ---
-# Welcome to Matteo Collina's Website!
+# Welcome
 
-This is just a place holder for the start page for your new website!
+<img src="matteo.jpg" class="floatRight"/>
 
-You can start by adjusting the meta information for this page file and adding some real content and
-then adding some more page files!
+I’m Matteo Collina, a 25-years-old Italian, computer engineer, programmer,
+sailor, and web-nerd – amongst other things.
 
-For more information about webgen have a look at the [documentation]!
-
-[documentation]: http://webgen.rubyforge.org/documentation/index.html
+You can find out more about be by poking around the links above.

@@ -1,0 +1,5 @@
+--- name:alcn
+matteo.jpg:
+    thumb: false
+    image.width: 300
+    image.height: 300
