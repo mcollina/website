@@ -138,7 +138,7 @@
   margin: 0 2px;
   padding: 5px 0.5em;
 
-  font: 400 1.6em "trebuchet ms", serif;
+  font: 400 1.2em "trebuchet ms", serif;
   text-decoration: none;
   text-transform: lowercase;
   color: #470052;
@@ -240,7 +240,7 @@ ul.sideMenu {
   float: left;
   width: 100%;
   clear: both;
-  
+
   margin-top: -3.4em;
   background: #000 url(../images/bg/footer.png) repeat-x top left;
   color: #FFF
@@ -250,7 +250,7 @@ ul.sideMenu {
 #footer #width {
   position: relative;
   z-index: 3;
-  font-size: 0.85em;
+  font-size: 0.70em;
   padding-top: 27px;
 }
 
