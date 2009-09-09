@@ -1,3 +1,8 @@
 
 <h1>{title:}</h1>
+
+<% if context.node.meta_info.has_key? "image" %>
+<img src="{relocatable:<%= context.node['image'] %>}" class="center"/>
+<% end %>
+
 <webgen:block name="content"/>
