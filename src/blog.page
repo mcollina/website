@@ -6,17 +6,19 @@ sort_info: 20
 
 <% 
   posts = context.website.tree.node_access[:path].values.select do |n|
-    Webgen::Path.match(n.path,"/blog/**/*.html") and n.lang == context.node.lang
+    Webgen::Path.match(n.path,"/blog/*/**/*.html") and n.lang == context.node.lang
   end
   
   posts.sort! do |a,b|
     a.meta_info["created_at"] <=> b.meta_info["created_at"]
   end
-
-  template = context.website.tree.node_access[:path]["/blog/default.template"]
 %>
 
 <h1><%= posts.first["title"] %></h1>
+
+<% if posts.first.meta_info.has_key? "image" %>
+<img src="{relocatable:<%= posts.first['image'] %>}" class="center"/>
+<% end %>
 
 <%= posts.first.node_info[:page].blocks["content"].content %>
 

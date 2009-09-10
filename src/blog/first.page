@@ -2,7 +2,7 @@
 title: The First blog post
 created_at: 2008-08-14 10:25:34 +01:00
 modified_at: 2008-08-14 10:25:34 +01:00
-image: sample.jpg
+image: /blog/sample.jpg
 ---
 
 this is a try
