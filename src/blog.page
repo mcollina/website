@@ -14,13 +14,17 @@ sort_info: 20
   end
 %>
 
-<h1><%= posts.first["title"] %></h1>
+<h1><%= context.node.link_to(posts.first) %></h1>
 
 <% if posts.first.meta_info.has_key? "image" %>
-<img src="{relocatable:<%= posts.first['image'] %>}" class="center"/>
+<img src="{relocatable:<%= posts.first['image'].gsub(/(\..+)$/,'.thumb\1') %>}" class="floatRight"/>
 <% end %>
 
-<%= posts.first.node_info[:page].blocks["content"].content %>
+<%= posts.first.node_info[:page].blocks["summary"].content %>
+
+<p>
+<%= context.node.link_to(posts.first, :link_text => "{t:blog.more}") %>
+</p>
 
 <h1>{t:blog.oldpost.title}</h1>
 

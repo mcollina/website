@@ -14,3 +14,7 @@ this is a try
 {coderay:: {lang: ruby, bold_every: 2}}puts "hello"
 puts "world"
 {coderay}
+
+--- name:summary
+
+This is the first post summary

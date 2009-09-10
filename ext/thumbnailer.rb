@@ -6,8 +6,8 @@ config['sourcehandler.invoke'][5] << 'Thumbnailer'
 config['sourcehandler.default_meta_info']['Thumbnailer'] = {
   "image.width" => 500,
   "image.height" => 500,
-  "thumb.width" => 75,
-  "thumb.height" => 75,
+  "thumb.width" => 100,
+  "thumb.height" => 100,
   "resize" => true,
   "thumb" => true
 }

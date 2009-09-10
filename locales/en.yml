@@ -2,3 +2,4 @@ blog:
   oldpost:
     title: "Older Posts"
     content: "Following is a list of all post entries:"
+  more: "(More)"

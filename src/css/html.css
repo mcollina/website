@@ -91,6 +91,10 @@ a:hover {
   
 }
 
+h1 a {
+  text-decoration: none;
+}
+
 b {
   color: #470052;
 }
