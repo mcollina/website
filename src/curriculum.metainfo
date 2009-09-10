@@ -1,5 +1,0 @@
---- name:alcn
-/curriculum.*.pdf:
-    in_menu: true
-    title: Curriculum
-    sort_info: 30
