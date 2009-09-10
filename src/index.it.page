@@ -2,6 +2,7 @@
 title: Home
 in_menu: true
 sort_info: 10
+javascript: [js/twitterbox.js]
 ---
 # Benvenuti
 
@@ -21,11 +22,6 @@ conoscermi meglio, aggiungimi pure.
 <h2 class="sidebar-title"><a href="http://twitter.com/matteo_collina" id="twitter-link">Twitter Updates</a></h2>
 <ul id="twitter_update_list"></ul>
 </div>
-
-<script type="text/javascript" src="http://twitter.com/javascripts/blogger.js">document</script>
-
-<script type="text/javascript" src="http://twitter.com/statuses/user_timeline/matteo_collina.json?callback=twitterCallback2&amp;count=5">document</script>
-
 
 [cv]: {relocatable:curriculum.pdf}
 [lp]: https://launchpad.net/~matteo-collina

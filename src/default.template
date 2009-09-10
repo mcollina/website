@@ -119,6 +119,13 @@
 
 </div>
 
+  <script type="text/javascript" src="{relocatable: js/loader.js}"></script>
+  <script type="text/javascript">
+    loadJs("{relocatable: js/prototype.js}");
+    <% context.node["javascript"] && context.node["javascript"].each do |js| %>
+    loadJs("{relocatable:<%= js %>}");
+    <% end %>
+  </script>
 </body>
 
 </html>
