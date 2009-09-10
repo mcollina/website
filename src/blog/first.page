@@ -11,3 +11,6 @@ this is a try
 
 [![]({relocatable: /blog/sample.thumb.jpg})]({relocatable: /blog/sample.jpg})
 
+{coderay:: {lang: ruby, bold_every: 2}}puts "hello"
+puts "world"
+{coderay}

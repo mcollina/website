@@ -116,18 +116,20 @@ del {
   color: #AAA;
 }
 
-code {
-  margin: 10px 15px;
-  padding: 10px;
+code, .code {
+  margin-left:auto;
+  margin-right:auto;
+  
+  padding: 5px 10px;
   display: block;
   overflow: auto;
   
   font: 400 1em courier, monospace;
   line-height: 120%;
   white-space: pre;
-  
-  color: #FFF;
-  background: #470052;
+  width: 80%;
+
+  background: #EEE;
 }
 
 .leftColumn code {
@@ -243,4 +245,5 @@ img.floatLeft {
 a img {
   border-style: none;
   text-decoration: none;
-}
+}
+
