@@ -1,0 +1,23 @@
+---
+title: Progetti
+in_menu: true
+sort_info: 30
+---
+
+# Progetti Open Source
+
+Dal momento che credo fermamente nel movimento Open Source, provo a contribuire
+alla comunità quando posso, sopratutto riportando/correggendo bug o sviluppando qualche
+piccola applicazione.
+
+Ho contribuito ai seguenti progetti:
+
+*  [Ubuntu][myubuntubugs], celebre distribuzione per la quale ho collaborato a
+    scovare e correggere i bug che affligevano i portatili che ho avuto negli
+    anni.
+*  [LLIP][llip] è una piccola libreria ruby (più precidamente un DSL) 
+    utilizzabile per effettuare il parsing di piccoli linguaggi: è nata durante 
+    un progetto all'università e  ho voluto rilasciarla sotto una licenza open.
+
+[myubuntubugs]: https://bugs.launchpad.net/~matteo-collina
+[llip]: http://rubyforge.org/projects/llip

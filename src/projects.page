@@ -1,0 +1,21 @@
+---
+title: Projects
+in_menu: true
+sort_info: 30
+---
+
+# Open Source Projects
+
+As I believe in Open Source Software I try to contribute whenever I can, mostly
+reporting bugs or developing some small application.
+
+I have contributed to the following projects:
+
+*  [Ubuntu][myubuntubugs], for which I usually report bugs about the support
+    of my current laptop.
+*  [LLIP][llip], which is a small ruby library to parse small languages that
+    I developed during a course at university. It's not used by anyone, but
+    I think it's a nice proof of concept of a ruby DSL for parsing languages.
+
+[myubuntubugs]: https://bugs.launchpad.net/~matteo-collina
+[llip]: http://rubyforge.org/projects/llip
