@@ -209,13 +209,13 @@ input.button {
 
 blockquote {
   margin: 10px 15px;
-  padding-left: 27px;
+  padding: 0.5em 2.5em;
   
   border: 2px solid #470052;
   
   background-image: url(../images/icons/quote.gif);
   background-repeat: no-repeat;
-  background-position: 5px 50%;  
+  background-position: 0.3em 50%;
 }
 
 blockquote.exclamation {

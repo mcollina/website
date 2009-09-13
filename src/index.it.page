@@ -18,7 +18,11 @@ me e perciò vi consiglio di visitare i link sovrastanti, o magari leggere il mi
 Ho anche un profilo su [Facebook][fb], per cui se già ci conosciamo o se vuoi
 conoscermi meglio, aggiungimi pure.
 
-<div id="twitter_div" class="floatLeft">
+<blockquote class="exclamation floatLeft">Looking for the English page?
+<%= context.node.link_to(context.node.in_lang("en"), :link_text => "Click here!") %>
+</blockquote>
+
+<div id="twitter_div" style="clear: both">
 <h2 class="sidebar-title"><a href="http://twitter.com/matteo_collina" id="twitter-link">Twitter Updates</a></h2>
 <ul id="twitter_update_list"></ul>
 </div>
