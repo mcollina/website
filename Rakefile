@@ -54,7 +54,7 @@ GROUP = "www-data"
 REMOTE_DIR = "/var/www/mysite"
 
 desc 'Upload the site'
-task :deploy => :default do
+task :deploy => :clear_and_run do
   Net::SSH.start(HOST, USER) do |ssh|
     puts "Removing #{REMOTE_DIR}"
     ssh.exec! "rm -rf #{REMOTE_DIR}/*"
