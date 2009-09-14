@@ -3,3 +3,10 @@ blog:
     title: "Articoli Precedenti"
     content: "Segue l'elenco di tutti gli articoli precedentemente pubblicati:"
   more: "(Continua a leggere)"
+
+
+analytics:
+  exclusion:
+    page: "Pagina di Esclusione da Google Analytics"
+    message: "Ora sei escluso!"
+    button: "Escludi questo computer."

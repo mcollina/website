@@ -3,3 +3,9 @@ blog:
     title: "Older Posts"
     content: "Following is a list of all post entries:"
   more: "(More)"
+
+analytics:
+  exclusion:
+    page: "Google Analytics Exclusion Page"
+    message: "You are now excluded!"
+    button: "Exclude this computer."

@@ -1,0 +1,8 @@
+
+
+<h1>{t:analytics.exclusion.page}</h1>
+
+<form>
+<button onclick="javascript:pageTracker._setVar('test_value'); alert('{t:analytics.exclusion.message}');">
+{t:analytics.exclusion.button}</button>
+</form>
