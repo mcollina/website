@@ -51,22 +51,46 @@ task :clear_and_run => [:clobber_webgen, :webgen]
 HOST = "95.154.208.211"
 USER = "matteo"
 GROUP = "www-data"
-REMOTE_DIR = "/var/www/mysite"
+REMOTE_DIR = "/home/matteo/public_html"
+REMOTE_REPO = "/home/matteo/website/.git"
 
 desc 'Upload the site'
-task :deploy => :clear_and_run do
+task :deploy do
+
+  git = fork do 
+    puts "Uploading to remote git repo"
+
+    git_command = "git push ssh://#{HOST}#{REMOTE_REPO} master"
+    puts git_command
+
+    exec *git_command.split(" ")
+  end
+  Process.waitpid(git)
+
   Net::SSH.start(HOST, USER) do |ssh|
-    puts "Removing #{REMOTE_DIR}"
+
+    remote_basedir = REMOTE_REPO.gsub("/.git","")
+    tmpdir = remote_basedir + ".tmp"
+
+    puts "# Creating #{tmpdir}"
+    ssh.exec! "rm -rf #{tmpdir}"
+
+    puts "# Cloning #{tmpdir}"
+    puts ssh.exec! "git clone #{remote_basedir} #{tmpdir}"
+
+    puts "# Remotely generating the website"
+    puts ssh.exec! "cd #{tmpdir} && rake clear_and_run"
+
+    puts "# Removing #{REMOTE_DIR}"
     ssh.exec! "rm -rf #{REMOTE_DIR}/*"
 
-    Net::SCP.start(HOST, USER) do |scp|
-      Dir.glob("out/*") do |filename|
-        puts "Uploading recursively #{filename}"
-        scp.upload! filename,  REMOTE_DIR, :recursive => true
-      end
-    end
+    puts "# Moving the generated website to #{REMOTE_DIR}"
+    ssh.exec! "mv #{tmpdir}/out/* #{REMOTE_DIR}"
 
-    puts "Changing group to #{GROUP}"
+    puts "# Changing group to #{GROUP}"
     ssh.exec! "chgrp #{GROUP} #{REMOTE_DIR} -R"
+
+    puts "# Cleaning #{tmpdir}"
+    ssh.exec! "rm -rf #{tmpdir}"
   end
 end
