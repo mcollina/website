@@ -1,0 +1,40 @@
+---
+title: Blog
+in_menu: true
+sort_info: 20
+blog.filter: /blog/*/**/*.html
+blog.post_per_page: 5
+--- pipeline:translator,erb,tags,maruku
+
+<% 
+  posts = context.node['posts']
+
+  posts.each do |post|
+%>
+
+<h1><%= context.node.link_to(post) %></h1>
+
+<% if post.meta_info.has_key? "image" %>
+<img src="{relocatable:<%= post['image'].gsub(/(\..+)$/,'.thumb\1') %>}" class="floatRight"/>
+<% end %>
+
+<%= post.node_info[:page].blocks["summary"].content %>
+
+<p>
+<%= context.node.link_to(post, :link_text => "{t:blog.more}") %>
+</p>
+
+<% end %>
+
+<%
+links = []
+unless context.node['posts'].next_node.nil?
+    links << context.node.link_to(context.node['posts'].next_node, :link_text => "{t: blog.page.next}")
+end
+unless context.node['posts'].prev_node.nil?
+    links << context.node.link_to(context.node['posts'].prev_node, :link_text => "{t: blog.page.prev}")
+end
+%>
+<p class="floatLeft">
+<%= links.join(" | ") %>
+</p>

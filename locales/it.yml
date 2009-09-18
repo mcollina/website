@@ -2,7 +2,10 @@ blog:
   oldpost:
     title: "Articoli Precedenti"
     content: "Segue l'elenco di tutti gli articoli precedentemente pubblicati:"
-  more: "(Continua a leggere)"
+  more: "(Articolo Completo)"
+  page:
+    next: "Articoli Precedenti"
+    prev: "Articoli Successivi"
 
 
 analytics:

@@ -2,7 +2,11 @@ blog:
   oldpost:
     title: "Older Posts"
     content: "Following is a list of all post entries:"
-  more: "(More)"
+  more: "(Full Article)"
+  page:
+    next: "Previous Articles"
+    prev: "Following Articles"
+
 
 analytics:
   exclusion:

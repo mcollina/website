@@ -19,5 +19,7 @@ load File.dirname(__FILE__) + "/i18n.rb"
 
 load File.dirname(__FILE__) + "/thumbnailer.rb"
 
+load File.dirname(__FILE__) + "/blog.rb"
+
 # to add pdfs auto-copy to destination.
 config['sourcehandler.patterns']['Webgen::SourceHandler::Copy'] << '**/*.pdf'
