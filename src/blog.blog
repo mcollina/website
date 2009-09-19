@@ -10,6 +10,7 @@ blog.post_per_page: 5
   posts = context.node['posts']
 
   posts.each do |post|
+    raise "Missing 'summary' block" if post.node_info[:page].blocks["summary"].nil?
 %>
 
 <h1><%= context.node.link_to(post) %></h1>
