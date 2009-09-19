@@ -13,6 +13,10 @@ unless Object.const_defined?(:Blog)
     include SourceHandler::Base
     include WebsiteAccess
 
+    def initialize #:nodoc:
+      website.blackboard.add_listener(:node_meta_info_changed?, method(:meta_info_changed?))
+    end
+
     def create_node(path)
       path_page = Page.from_data(path.io.data, path.meta_info)
       meta_info = path_page.meta_info
@@ -65,12 +69,47 @@ unless Object.const_defined?(:Blog)
         prev_node = (index < created_nodes.size - 1) ? created_nodes[index+1] : nil
         node[POSTS_ITERATOR] = PostsIterator.new(posts_pages[index],prev_node,next_node)
         node['in_menu'] = node['in_menu'] && prev_node.nil?
+        
+        [:used_meta_info_nodes, :used_nodes].each do |key|
+          node[key] ||= []
+          node[key] = node[key].concat(posts_pages[index])
+        end
+
+        node.node_info[:created_by_blog] = true
       end
       created_nodes
     end
 
     def content(node)
       raise "Should not be called!"
+    end
+
+    private
+
+    # Checks if the meta information provided by the file in Webgen Page Format changed.
+    # Or if the
+    def meta_info_changed?(node)
+      return unless node.node_info.has_key? :created_by_blog
+
+      path = website.blackboard.invoke(:source_paths)[node.node_info[:src]]
+      
+      if !path
+        node.flag(:dirty)
+        return
+      end
+
+      old_mi = node.node_info[:sh_page_node_mi]
+      new_mi = Webgen::Page.meta_info_from_data(path.io.data)
+      if old_mi && old_mi != new_mi
+        node.flag(:dirty)
+        return
+      end
+
+      node[POSTS_ITERATOR].each do |post|
+        path = website.blackboard.invoke(:source_paths)[post.node_info[:src]]
+        node.flag(:dirty) unless path && !path.changed?
+      end
+
     end
   end
 
