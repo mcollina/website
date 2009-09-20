@@ -1,150 +1,150 @@
 
-unless Object.const_defined?(:Blog)
-
-  require 'stringio'
+require 'stringio'
   
-  class Blog
+class Blog
 
-    FILTER = "blog.filter"
-    POST_PER_PAGE = "blog.post_per_page"
-    POSTS_ITERATOR = "posts"
+  FILTER = "blog.filter"
+  POST_PER_PAGE = "blog.post_per_page"
+  POSTS_ITERATOR = "posts"
 
-    include Webgen
-    include SourceHandler::Base
-    include WebsiteAccess
+  def self.setup()
+    config = Webgen::WebsiteAccess.website.config
 
-    def initialize #:nodoc:
-      website.blackboard.add_listener(:node_meta_info_changed?, method(:meta_info_changed?))
-    end
-
-    def create_node(path)
-      path_page = Page.from_data(path.io.data, path.meta_info)
-      meta_info = path_page.meta_info
-
-      unless meta_info.has_key? FILTER
-        raise "Missing meta_info '#{FILTER}' for path: #{path.path}"
-      end
-      if meta_info[POST_PER_PAGE] <= 0
-        raise "The meta_info #{POST_PER_PAGE} should be greater than one for path: #{path.path}"
-      end
-
-
-      # select only blog's posts
-      posts = website.tree.node_access[:path].values.select do |n|
-        Webgen::Path.match(n.path,meta_info[FILTER])
-      end
-
-      raise "No node selected by the key: #{FILTER}" if posts.size == 0
-
-      # order them by their creation date, newer posts first
-      posts.sort! do |a,b|
-        a.meta_info["created_at"] <=> b.meta_info["created_at"]
-      end
-
-      # divide posts in pages, starting from the oldest posts
-      posts_pages = [[]]
-      posts.each do |post|
-        posts_pages << [] if posts_pages.last.size >= meta_info[POST_PER_PAGE]
-        posts_pages.last.unshift post
-      end
-
-      # generates nodes
-      created_nodes = []
-      page_sourcehandler = SourceHandler::Page.new
-      posts_pages.each_index do |index|
-        dest_path = Path.new(path.source_path.gsub(/blog$/, "#{index + 1}.html"), path.source_path) do
-          StringIO.new(path.io.data)
-        end
-        created_nodes << website.blackboard.invoke(:create_nodes, dest_path, page_sourcehandler)
-      end
-      created_nodes.flatten!
-
-      # fill every node with its meta informations
-      # the lower the index, the oldest the articles
-      # the articles are displaied starting from the latest, so the next node
-      # as an index lower than the current node, while the previous node is the
-      # element with index greater than the current node.
-      created_nodes.each_with_index do |node, index|
-        next_node = (index > 0) ? created_nodes[index-1] : nil
-        prev_node = (index < created_nodes.size - 1) ? created_nodes[index+1] : nil
-        node[POSTS_ITERATOR] = PostsIterator.new(posts_pages[index],prev_node,next_node)
-        node['in_menu'] = node['in_menu'] && prev_node.nil?
-        
-        [:used_meta_info_nodes, :used_nodes].each do |key|
-          node[key] ||= []
-          node[key] = node[key].concat(posts_pages[index])
-        end
-
-        node.node_info[:created_by_blog] = true
-      end
-      created_nodes
-    end
-
-    def content(node)
-      raise "Should not be called!"
-    end
-
-    private
-
-    # Checks if the meta information provided by the file in Webgen Page Format changed.
-    # Or if the
-    def meta_info_changed?(node)
-      return unless node.node_info.has_key? :created_by_blog
-
-      path = website.blackboard.invoke(:source_paths)[node.node_info[:src]]
-      
-      if !path
-        node.flag(:dirty)
-        return
-      end
-
-      old_mi = node.node_info[:sh_page_node_mi]
-      new_mi = Webgen::Page.meta_info_from_data(path.io.data)
-      if old_mi && old_mi != new_mi
-        node.flag(:dirty)
-        return
-      end
-
-      node[POSTS_ITERATOR].each do |post|
-        path = website.blackboard.invoke(:source_paths)[post.node_info[:src]]
-        node.flag(:dirty) unless path && !path.changed?
-      end
-
-    end
+    config.patterns('Blog' => ['**/*.blog'])
+    config['sourcehandler.invoke'][5] << 'Blog'
+    config['sourcehandler.default_meta_info']['Blog'] = {
+      Blog::POST_PER_PAGE => 5
+    }
   end
 
-  class PostsIterator
+  include Webgen
+  include SourceHandler::Base
+  include WebsiteAccess
 
-    include Enumerable
+  def initialize #:nodoc:
+    website.blackboard.add_listener(:node_meta_info_changed?, method(:meta_info_changed?))
+  end
 
-    attr_reader :next_node
-    attr_reader :prev_node
+  def create_node(path)
+    path_page = Page.from_data(path.io.data, path.meta_info)
+    meta_info = path_page.meta_info
 
-    def initialize(posts, prev_node, next_node)
-      @posts = posts
-      @prev_node = prev_node
-      @next_node = next_node
+    unless meta_info.has_key? FILTER
+      raise "Missing meta_info '#{FILTER}' for path: #{path.path}"
+    end
+    if meta_info[POST_PER_PAGE] <= 0
+      raise "The meta_info #{POST_PER_PAGE} should be greater than one for path: #{path.path}"
     end
 
-    def each(&block)
-      @posts.each(&block)
+
+    # select only blog's posts
+    posts = website.tree.node_access[:path].values.select do |n|
+      Webgen::Path.match(n.path,meta_info[FILTER])
     end
 
-    def first?
-      prev_page.nil?
+    raise "No node selected by the key: #{FILTER}" if posts.size == 0
+
+    # order them by their creation date, newer posts first
+    posts.sort! do |a,b|
+      a.meta_info["created_at"] <=> b.meta_info["created_at"]
     end
 
-    def last?
-      next_node.nil?
+    # divide posts in pages, starting from the oldest posts
+    posts_pages = [[]]
+    posts.each do |post|
+      posts_pages << [] if posts_pages.last.size >= meta_info[POST_PER_PAGE]
+      posts_pages.last.unshift post
     end
+
+    # generates nodes
+    created_nodes = []
+    page_sourcehandler = SourceHandler::Page.new
+    posts_pages.each_index do |index|
+      dest_path = Path.new(path.source_path.gsub(/blog$/, "#{index + 1}.html"), path.source_path) do
+        StringIO.new(path.io.data)
+      end
+      created_nodes << website.blackboard.invoke(:create_nodes, dest_path, page_sourcehandler)
+    end
+    created_nodes.flatten!
+
+    # fill every node with its meta informations
+    # the lower the index, the oldest the articles
+    # the articles are displaied starting from the latest, so the next node
+    # as an index lower than the current node, while the previous node is the
+    # element with index greater than the current node.
+    created_nodes.each_with_index do |node, index|
+      next_node = (index > 0) ? created_nodes[index-1] : nil
+      prev_node = (index < created_nodes.size - 1) ? created_nodes[index+1] : nil
+      node[POSTS_ITERATOR] = PostsIterator.new(posts_pages[index],prev_node,next_node)
+      node['in_menu'] = node['in_menu'] && prev_node.nil?
+        
+      [:used_meta_info_nodes, :used_nodes].each do |key|
+        node[key] ||= []
+        node[key] = node[key].concat(posts_pages[index])
+      end
+
+      node.node_info[:created_by_blog] = true
+    end
+    created_nodes
+  end
+
+  def content(node)
+    raise "Should not be called!"
+  end
+
+  private
+
+  # Checks if the meta information provided by the file in Webgen Page Format changed.
+  # Or if the
+  def meta_info_changed?(node)
+    return unless node.node_info.has_key? :created_by_blog
+
+    path = website.blackboard.invoke(:source_paths)[node.node_info[:src]]
+      
+    if !path
+      node.flag(:dirty)
+      return
+    end
+
+    old_mi = node.node_info[:sh_page_node_mi]
+    new_mi = Webgen::Page.meta_info_from_data(path.io.data)
+    if old_mi && old_mi != new_mi
+      node.flag(:dirty)
+      return
+    end
+
+    node[POSTS_ITERATOR].each do |post|
+      path = website.blackboard.invoke(:source_paths)[post.node_info[:src]]
+      node.flag(:dirty) unless path && !path.changed?
+    end
+
+  end
+end
+
+class PostsIterator
+
+  include Enumerable
+
+  attr_reader :next_node
+  attr_reader :prev_node
+
+  def initialize(posts, prev_node, next_node)
+    @posts = posts
+    @prev_node = prev_node
+    @next_node = next_node
+  end
+
+  def each(&block)
+    @posts.each(&block)
+  end
+
+  def first?
+    prev_page.nil?
+  end
+
+  def last?
+    next_node.nil?
   end
 end
 
 
-config = Webgen::WebsiteAccess.website.config
-
-config.patterns('Blog' => ['**/*.blog'])
-config['sourcehandler.invoke'][5] << 'Blog'
-config['sourcehandler.default_meta_info']['Blog'] = {
-  Blog::POST_PER_PAGE => 5
-}

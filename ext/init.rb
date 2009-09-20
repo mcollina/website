@@ -10,16 +10,22 @@
 
 config = Webgen::WebsiteAccess.website.config
 
-load File.dirname(__FILE__) + "/translator.rb"
-
-config.translator.languages = ["en", "it"]
-
-
-load File.dirname(__FILE__) + "/i18n.rb"
-
-load File.dirname(__FILE__) + "/thumbnailer.rb"
-
-load File.dirname(__FILE__) + "/blog.rb"
 
 # to add pdfs auto-copy to destination.
 config['sourcehandler.patterns']['Webgen::SourceHandler::Copy'] << '**/*.pdf'
+
+require File.dirname(__FILE__) + "/translator.rb"
+
+Translator.setup ["en", "it"]
+
+require File.dirname(__FILE__) + "/i18n.rb"
+
+I18n.setup
+
+require File.dirname(__FILE__) + "/thumbnailer.rb"
+
+Thumbnailer.setup
+
+require File.dirname(__FILE__) + "/blog.rb"
+
+Blog.setup

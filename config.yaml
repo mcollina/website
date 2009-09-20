@@ -26,6 +26,3 @@ tag.langbar.lang_names:
     <img src="{relocatable: images/icons/italian_flag.gif}" alt="Italiano"/>
 
 tag.langbar.process_output: true
-
-default_processing_pipeline:
-  Page: translator,erb,tags,markdown,blocks
