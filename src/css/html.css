@@ -43,22 +43,22 @@ h2 {
 
 h3 {
   font: 400 1.3em "trebuchet ms", serif;
-  color: #F8D766;
+  color: #470052;
 }
 
 h4 {
   font: 700 1.2em "trebuchet ms", serif;
-  color: #F39F01;
+  color: #470052;
 }
 
 h5 {
   font: 700 1.1em "trebuchet ms", serif;
-  color: #F17400;
+  color: #470052;
 }
 
 h6 {
   font: 700 1em "trebuchet ms", serif;
-  color: #FF4B33;
+  color: #470052;
 }
 
 
@@ -162,6 +162,7 @@ dd {
    Form Elements
  **************************************************************/
 
+/*
 label {
   display: block;
 }
@@ -198,7 +199,7 @@ input.button {
   border-style: solid;
   border-color: #FFF #E1CDE4 #E1CDE4 #FFF;
 }
-
+*/
 
 
 

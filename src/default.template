@@ -37,6 +37,13 @@
 
   <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="{relocatable: /blog.rss}" />
 
+<% if Kernel.const_defined? :DISQUS_DEVELOPER and DISQUS_DEVELOPER == true %>
+  <script type="text/javascript">
+//<![CDATA[
+var disqus_developer = 1
+//]]>
+  </script>
+<% end %>
 </head>
 
 
@@ -121,20 +128,40 @@
 
   <script type="text/javascript" src="{relocatable: js/loader.js}"></script>
   <script type="text/javascript">
+//<![CDATA[
     //loadJs("{relocatable: js/prototype.js}");
     <% context.node["javascript"] && context.node["javascript"].each do |js| %>
     loadJs("{relocatable:<%= js %>}");
     <% end %>
+//]]>
   </script>
 <script type="text/javascript">
+//<![CDATA[
 var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
 document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+//]]>
 </script>
 <script type="text/javascript">
+//<![CDATA[
 try {
 var pageTracker = _gat._getTracker("UA-10646754-1");
 pageTracker._trackPageview();
 } catch(err) {}
+//]]>
+</script>
+<script type="text/javascript">
+//<![CDATA[
+(function() {
+	var links = document.getElementsByTagName('a');
+	var query = '?';
+	for(var i = 0; i < links.length; i++) {
+	if(links[i].href.indexOf('#disqus_thread') >= 0) {
+		query += 'url' + i + '=' + encodeURIComponent(links[i].href) + '&';
+	}
+	}
+	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/matteocollina/get_num_replies.js' + query + '"></' + 'script>');
+})();
+//]]>
 </script>
 </body>
 

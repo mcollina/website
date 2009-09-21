@@ -94,3 +94,11 @@ task :deploy do
     ssh.exec! "rm -rf #{tmpdir}"
   end
 end
+
+task :set_disqus_developer do
+  Kernel.const_set(:DISQUS_DEVELOPER,true)
+end
+
+
+desc "Generates the site with disqus_developer=1"
+task :run_with_disqus_developer => [:set_disqus_developer, :clear_and_run]
