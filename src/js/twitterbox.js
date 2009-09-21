@@ -38,4 +38,4 @@ function relative_time(time_value) {
   }
 }
 
-loadJs("http://twitter.com/statuses/user_timeline/matteo_collina.json?callback=twitterCallback&count=5")
+loadJs("http://twitter.com/statuses/user_timeline/matteocollina.json?callback=twitterCallback&count=5")
