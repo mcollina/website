@@ -2,14 +2,12 @@
 title: The First blog post
 created_at: 2008-08-14 10:25:34 +01:00
 modified_at: 2008-08-14 10:25:34 +01:00
-image: /blog/sample.jpg
+draft: true
 ---
 
 this is a try
 
 # prova prova
-
-[![]({relocatable: /blog/sample.thumb.jpg})]({relocatable: /blog/sample.jpg})
 
 {coderay:: {lang: ruby, bold_every: 2}}puts "hello"
 puts "world"
