@@ -252,3 +252,13 @@ a img {
   text-decoration: none;
 }
 
+
+/**************************************************************
+   Disqus display classes
+ **************************************************************/
+
+#disqus_thread {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
