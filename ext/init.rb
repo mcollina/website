@@ -18,9 +18,9 @@ require File.dirname(__FILE__) + "/translator.rb"
 
 Translator.setup ["en", "it"]
 
-require File.dirname(__FILE__) + "/i18n.rb"
+require File.dirname(__FILE__) + "/i18n_tag.rb"
 
-I18n.setup
+I18nTag.setup
 
 require File.dirname(__FILE__) + "/thumbnailer.rb"
 

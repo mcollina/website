@@ -1,15 +1,16 @@
-blog:
-  oldpost:
-    title: "Articoli Precedenti"
-    content: "Segue l'elenco di tutti gli articoli precedentemente pubblicati:"
-  more: "(Articolo Completo)"
-  page:
-    next: "Articoli Precedenti"
-    prev: "Articoli Successivi"
+it:
+  blog:
+    oldpost:
+      title: "Articoli Precedenti"
+      content: "Segue l'elenco di tutti gli articoli precedentemente pubblicati:"
+    more: "(Articolo Completo)"
+    page:
+      next: "Articoli Precedenti"
+      prev: "Articoli Successivi"
 
 
-analytics:
-  exclusion:
-    page: "Pagina di Esclusione da Google Analytics"
-    message: "Ora sei escluso!"
-    button: "Escludi questo computer."
+  analytics:
+    exclusion:
+      page: "Pagina di Esclusione da Google Analytics"
+      message: "Ora sei escluso!"
+      button: "Escludi questo computer."
