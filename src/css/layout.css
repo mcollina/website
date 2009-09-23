@@ -372,7 +372,12 @@ ul.sideMenu {
   background: #FFF url(../images/bg/gradient.png) repeat-x top left; 
 }
 
+/**************************************************************
+   hCard display classes
+ **************************************************************/
 
-
+.vcard {
+  display: none;
+}
 
 

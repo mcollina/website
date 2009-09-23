@@ -108,6 +108,21 @@ var disqus_developer = 1
 </div>
 
 
+<!-- hCard: contains my personal details. -->
+<div id="hcard-Matteo-Collina" class="vcard">
+  <img style="float:left; margin-right:4px" src="http://matteocollina.com/matteo.jpg" alt="photo of " class="photo"/>
+ <a class="url fn" href="http://matteocollina.com">Matteo Collina</a>
+ <a class="email" href="mailto:matteo.collina AT gmail D0T com">matteo.collina AT gmail D0T com</a>
+ <div class="adr">
+  <span class="locality">Forlì</span>
+, 
+  <span class="postal-code">47121</span>
+
+  <span class="country-name">Italy</span>
+
+ </div>
+</div>
+
 <!-- FOOTER: Site footer for links, copyright, etc. -->
 <div id="footer">
 
