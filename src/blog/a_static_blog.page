@@ -34,7 +34,7 @@ This tool, written in [Ruby][], allows to keep separated contents and layouts an
 to extend it by adding new types of contents and by modifying the website build process.
 In fact I have crafted some add-ons to generate the main blog page, to generate image thumbnails,
 and to maintain a multi-language website updated.
-This website and all those add-ons are available at my [GitHub][] page, in the [website][branch],
+This website and all those add-ons are available at my [GitHub][] page, in the [website branch][branch],
 feel free to study, copy, and improve it and it as you like.
 I'll be posting about them soon, so stay tuned if you're interested.
 
@@ -49,7 +49,11 @@ I'll be posting about them soon, so stay tuned if you're interested.
 
 When I decided to open up a new blog I needed a place to share my thoughts about technology.
 I cried for some pages where to publish the solutions about the programming problems I face everyday.
-Most problems are already well examined elsewhere, but sometimes there are some problems 
-for which there isn't a answer yet.
-So this blog will just be an home for all the answers I'll found! 
+I needed a blogging software which doesn't require maintenance, so I discarded all modern dynamic
+blogging software, like [Wordpress][].
+In the same time I met [Webgen][], a powerful static site generator: the idea behind this blog was
+born.
 
+[Wordpress]: http://Wordpress.org/
+[Webgen]: http://webgen.rubyforge.org/
+[Webgen]: http://webgen.rubyforge.org/
