@@ -1,4 +1,5 @@
 --- name:paths
 *.page:
   output_path_style: [:parent, :year, /, :month, /, :day, /, :basename, [., :lang], :ext]
+  author: Matteo
 

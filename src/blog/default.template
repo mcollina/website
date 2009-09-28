@@ -1,5 +1,7 @@
-
 <h1>{title:}</h1>
+<p class="author">
+{l: {meta: created_at, key: blog.written_at}}
+</p>
 
 <% if context.node.meta_info.has_key? "image" %>
 <img src="{relocatable:<%= context.node['image'] %>}" class="center"/>
