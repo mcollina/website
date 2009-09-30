@@ -44,6 +44,9 @@ var disqus_developer = 1
 //]]>
   </script>
 <% end %>
+
+  <link type="text/css" rel="stylesheet" href="{relocatable: /css/SyntaxHighlighter.css}">
+
 </head>
 
 
@@ -177,6 +180,12 @@ pageTracker._trackPageview();
 	document.write('<script charset="utf-8" type="text/javascript" src="http://disqus.com/forums/matteocollina/get_num_replies.js' + query + '"></' + 'script>');
 })();
 //]]>
+</script>
+<script language="javascript" src="{relocatable:/js/shCore.js}"></script>
+<script language="javascript" src="{relocatable:/js/shBrushRuby.js}"></script>
+<script language="javascript">
+dp.SyntaxHighlighter.ClipboardSwf = '{relocatable: /js/clipboard.swf}';
+dp.SyntaxHighlighter.HighlightAll('code');
 </script>
 </body>
 

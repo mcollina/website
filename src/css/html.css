@@ -120,7 +120,7 @@ del {
   color: #AAA;
 }
 
-code, .code {
+code, pre, .code {
   margin-left:auto;
   margin-right:auto;
   

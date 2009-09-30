@@ -13,6 +13,7 @@ config = Webgen::WebsiteAccess.website.config
 
 # to add pdfs auto-copy to destination.
 config['sourcehandler.patterns']['Webgen::SourceHandler::Copy'] << '**/*.pdf'
+config['sourcehandler.patterns']['Webgen::SourceHandler::Copy'] << '**/*.swf'
 
 require File.dirname(__FILE__) + "/translator.rb"
 
