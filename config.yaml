@@ -21,8 +21,10 @@ website.link_to_current_page: true
 
 tag.langbar.lang_names:
   en: |
-    <img src="{relocatable: images/icons/english_flag.gif}" alt="English"/>
+    <img src="{relocatable: images/icons/english_flag.png}" alt="English" class="language"/>
   it: |
-    <img src="{relocatable: images/icons/italian_flag.gif}" alt="Italiano"/>
+    <img src="{relocatable: images/icons/italian_flag.png}" alt="Italiano" class="language"/>
 
 tag.langbar.process_output: true
+
+tag.langbar.separator: ''

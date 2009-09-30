@@ -380,4 +380,18 @@ ul.sideMenu {
   display: none;
 }
 
+/**************************************************************
+   langbar display classes
+ **************************************************************/
+
+.langbar a {
+  background: none;
+}
+
+.langbar img {
+  height: 13px;
+  width: 13px;
+}
+
+
 
