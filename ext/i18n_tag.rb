@@ -19,7 +19,9 @@ end
 # <tt>{t: {key: a_key, object: the_object}}</tt> will search for a string
 # identified by <tt>:a_key</tt> and all occurrences of <tt>{{object}}</tt> in
 # such string will be replaced by <tt>the_object</tt>.
-# However all meta informations provided by the node will be available.
+# The tag is implemented in a way that allows all the meta informations provided 
+# by the node to be available
+# for interpolation without specifying them.
 #
 # This class provides also the tag +l+ which allows a look-up based localization
 # of times and dates like rails does. This tag requires changes behaviour 
@@ -85,11 +87,11 @@ class I18nTag
     if params.has_key? META
       object = context.node[params[META]]
     elsif params.has_key? DATE
-      object = Date.parse(params[DATE])
+      object = (params[DATE].kind_of? String) ? Date.parse(params[DATE]) : params[DATE]
     elsif params.has_key? TIME
-      object = Time.parse(params[DATETIME])
+      object = (params[TIME].kind_of? String) ? Time.parse(params[TIME]) : params[TIME]
     elsif params.has_key? DATETIME
-      object = DateTime.parse(params[DATETIME])
+      object = (params[DATETIME].kind_of? String) ? DateTime.parse(params[DATETIME]) : params[DATETIME]
     end
     
     I18n.localize(object, options)

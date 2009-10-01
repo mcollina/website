@@ -1,0 +1,185 @@
+---
+title: Bringing the Ruby On Rails I18n framework to Webgen.
+created_at: 2009-09-29 20:15:34 +01:00
+modified_at: 2009-09-29 20:15:34 +01:00
+image: /blog/images/flags.jpg
+---
+
+The first [Webgen][] extension I want to talk about is the **I18nTag**, a class built for
+providing support to template internationalization just like [Ruby On Rails][RoR] handle it.
+Webgen itself has some basic support for localizing the **content** of a page, but it doesn't
+really support lookup based localization of templates.
+
+## A little bit of Analysis
+
+Unfortunately, when developing a multi-language website with the tools provided by [Webgen][]
+itself feels a bit too clumsy. 
+In fact, all localization inside this tool happens at node level, which host the website content,
+i.e. this post, an image, or whatever can be provided in more than one language.
+This approach works really well for localizing the website content, but it's less than optimal 
+when we consider templates.
+For example we may want to localize an _english\_article.page_ file in Italian
+and to do so we should write the localized content in an _article.it.page_ and 
+that's all: [Webgen][] makes the right links when building the English and the Italian
+version of the website.  
+
+However this approach fails to deliver a easy way to localize a template, which is a kind
+of file completely different from a page.
+In fact, it contains mostly HTML tags or javascript code, so we don't want to violate the
+[DRY][] principle.
+Providing a template file every language it's really a bad idea, because every template 
+change should be done for every language.  
+
+## The Ruby On Rails Approach
+
+The RoR development team developed an effective way to deal with internationalization (i18n):
+the +I18n+ framework.
+This allows developers to translate template strings effectively through the use of two simple methods,
+as stated in the [rails i18n guide][i18n_guide]:
+<pre name="code" class="ruby">
+I18n.translate  # Lookup text translations 
+I18n.localize   # Localize Date and Time objects to local formats 
+I18n.t          # alias for translate
+I18n.l          # alias for localize 
+</pre>
+
+In the stock [RoR][] implementation the translation are stored in flat [YAML][] files, but it's possible
+to use different backends.
+The [YAML][] files are organized by language, in a _locales/_ folder, and the organization of them is
+quite straightforward:
+
+<pre name="code" class="ruby">
+en:
+  activerecord:
+    errors:
+      # The values :model, :attribute and :value are always available for interpolation
+      # The value :count is available when applicable. Can be used for pluralization.
+      messages:
+        inclusion: "is not included in the list"
+        exclusion: "is reserved"
+        invalid: "is invalid"
+        confirmation: "doesn't match confirmation"   
+</pre>
+
+The very same approach is provided for all other ruby developers by the gem [i18n][i18n-gem], which gives 
+us the very same classes and behaviour of the rails one. 
+
+## Introducing The I18nTag 
+
+The approach used in this blog aims to reproduce the very same functionality inside a [Webgen][] website.
+In fact the I18nTag is based on the [i18n][i18n-gem] gem, and maps it on two webgen tags: **t** and **l**.
+
+### The **t** tag
+
+The tag **t** which allows a look-up based translation like
+rails i18n. If _\{t: a\_key}_ is provided an string identified by _:a\_key_ will be 
+looked up in the translation files.
+This tag supports object interpolation like rails does, i.e.
+_\{t: {key: a\_key, object: the\_object}}_ will search for a string
+dentified by _:a\_key_ and all occurrences of _{{object}}_ in
+such string will be replaced by _the\_object_.
+The tag is implemented in a way that allows all the meta informations provided by the node to be available
+for interpolation without specifying them.
+
+As an example if the en.yml contains a definition like the following:
+
+<pre name="code" class="ruby">
+en:
+  blog:
+    more: "(Full Article)"
+    page:
+      next: "Previous Articles"
+      prev: "Following Articles"
+</pre>
+
+It's possible to write:
+
+<pre name="code" class="ruby">
+\{t: blog.page.next}    # which generates '{t: blog.page.next}'
+</pre>
+
+### The **l** tag
+
+This class provides also the tag **l** which allows a look-up based localization
+of times and dates like rails does. This tag requires changes behaviour 
+through the use of different parameters, so only the long tag form is
+possibile.
+The first optional parameter is **key** and its used to specify an optional
+format for times and dates, which will be looked up in the locale files.
+The second mandatory parameter must be one of the following:
+
+ *  __meta__: identifies a meta information of the node to use as the time
+    (or date) to format, if the node as the meta-info 'created\_at' it's possible
+    to use it specifying _\{l: {key: a\_key, meta: created\_at}}_;
+ *  __time__: a time in a format parsable by _Time.parse_;
+ *  __date__: a date in a format parsable by _Date.parse_;
+ *  __datetime__: a string identifying a time and a date in a format parsable by
+  DateTime.parse.
+
+However to use the **l** tag, is necessary to set up the locales files accordingly. 
+For example the _locales/en.yml_ in this blog contains:
+
+<pre name="code" class="ruby">
+en:      
+  date:
+    formats:
+      # Use the strftime parameters for formats.
+      # When no format has been given, it uses default.
+      # You can provide other formats here if you like!
+      default: "%Y-%m-%d"
+      short: "%b %d"
+      long: "%B %d, %Y"
+
+    day_names: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    abbr_day_names: [Sun, Mon, Tue, Wed, Thu, Fri, Sat]
+
+    # Don't forget the nil at the beginning; there's no such thing as a 0th month
+    month_names: [~, January, February, March, April, May, June, July, August, September, October, November, December]
+    abbr_month_names: [~, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec]
+    # Used in date_select and datime_select.
+    order: [ :year, :month, :day ]
+
+  time:
+    formats:
+      default: "%a, %d %b %Y %H:%M:%S %z"
+      short: "%d %b %H:%M"
+      long: "%B %d, %Y %H:%M"
+
+    am: "am"
+    pm: "pm"
+</pre>
+
+So, to include a time or a date in a webgen page, it's possible to write:
+
+<pre name="code" class="ruby">
+\{l: {key: date.formats.short, date: 2009-10-01}}   # which generates '{l: {key: date.formats.short, date: 2009-10-01}}'
+\{l: {date: 2009-10-01}}                            # which generates '{l: {date: 2009-10-01}}'
+\{l: {meta: created_at}}                            # which generates '{l: {meta: created_at}}',
+                                                   # the date in which this post is created
+</pre>
+
+## The Code
+
+<pre name="code" class="ruby">
+{include_file: {tag.includefile.filename: ext/i18n_tag.rb, tag.includefile.process_output: false}}
+</pre>
+
+Feel free to copy and adapt it to yours need, but if there are bugs report them in this blog post.
+
+[DRY]: http://en.wikipedia.org/wiki/DRY
+[RoR]: http://www.rubyonrails.org/
+[Webgen]: http://webgen.rubyforge.org/
+[i18n_guide]:http://guides.rubyonrails.org/i18n.html
+[YAML]: http://en.wikipedia.org/wiki/YAML
+[i18n-gem]: http://github.com/svenfuchs/i18n
+
+--- name:summary
+
+The first [Webgen][] extension I want to talk about is the **I18nTag**, a class built for
+providing support to template internationalization just like [Ruby On Rails][RoR] handle it.
+Webgen itself has some basic support for localizing the **content** of a page, but it doesn't
+really support lookup based localization of templates.
+
+[RoR]: http://www.rubyonrails.org/
+[Webgen]: http://webgen.rubyforge.org/
+
