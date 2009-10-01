@@ -17,7 +17,7 @@ config['sourcehandler.patterns']['Webgen::SourceHandler::Copy'] << '**/*.swf'
 
 require File.dirname(__FILE__) + "/translator.rb"
 
-Translator.setup ["en", "it"]
+Translator.setup("en", "it")
 
 require File.dirname(__FILE__) + "/i18n_tag.rb"
 
@@ -30,3 +30,7 @@ Thumbnailer.setup
 require File.dirname(__FILE__) + "/blog.rb"
 
 Blog.setup
+
+#Webgen::WebsiteAccess.website.logger.verbosity = :verbose
+
+

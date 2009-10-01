@@ -11,6 +11,7 @@ class Translator
     config.data["contentprocessor.map"]['translator'] = 'Translator'
     config.data['translator.languages'] = langs.join(",")
     config.data['sourcehandler.default_meta_info']["Webgen::SourceHandler::Page"]["blocks"]["default"]["pipeline"].gsub!(/^/,"translator,")
+    config.data['sourcehandler.default_meta_info']["Webgen::SourceHandler::Page"]["blocks"]["default"]["pipeline"].gsub!(/fragments/,"")
   end
 
   def call(context)
