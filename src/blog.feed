@@ -8,3 +8,4 @@ number_of_entries: 10
 rss: true
 atom: false
 entries: [blog/*.en.html]
+content_block_name: summary
