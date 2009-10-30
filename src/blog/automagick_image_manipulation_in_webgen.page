@@ -1,0 +1,124 @@
+---
+title: Automagick Image Manipulation in Webgen.
+created_at: 2009-10-30 22:15:34 +01:00
+modified_at: 2009-10-30 22:15:34 +01:00
+image: /blog/images/collage.jpg
+---
+
+One of the most useful feature of modern web applications is that they
+automatically resize and generates the thumbnails of the uploaded images.
+I personally hate wasting time and so I decided to add auto-resizing and
+auto-thumbnailing to my blog, which if you can't remember is
+[static]({relocatable: /blog/a_static_blog.html}) and powered by [Webgen][].
+
+## The Requirements
+
+First of all the image manipulation extension should not work if not 
+specifically requested to, i.e. it should generates no problems when installed 
+on a quite old website with tons of images already processed.
+Secondly the image manipulation extension should by default both resize and
+thumbnail every specified image.
+Thirdly the process should be customizable, generally through the use
+of a _\*.metainfo_ file, so a particular image could have a specific size, or
+even not resized at all.
+
+## The Library
+
+Fortunately there is the wonderful [RMagick][] library which does the heavy
+lifting for us: it takes care of resizing and thumbnailing.
+The only downside of using it is that it should actually be installed on the
+system so please refer to the [rmagick documentation][rmagick-install-doc].
+
+[RMagick][] allows to resize an image in a pretty quick way:
+<pre name="code" class="ruby">
+    width = height = 200
+    image = Magick::Image.read("path/to/your/image").first
+    image.resize_to_fit!(width, height)
+</pre>
+
+As you can see with these few lines of code is possible to achieve almost all
+its needed by this extension with these few lines.
+
+## Introducing the Thumbnailer SourceHandler
+
+In order to satisfy the requirements I had to write a [SourceHandler][] for a
+new type of files, which without imagination must have the suffix _".image"_.
+In this way it's possible to selectively manipulate only the specified images,
+so it's a a drop-in extension for any webgen website.
+Activating this extension it's super-easy:
+ 1. download the extension code (which is at the bottom of this page),
+ 2. add these lines to your _init.rb_:
+<pre name="code" class="ruby">
+    require "thumbnailer"
+    Thumbnailer.setup
+</pre>
+
+Another requirement dictates that all parameters, such as image and thumb sizes,
+should be completely customizable through the use of the
+[webgen metainformations][metainfo].
+Here it's a sample with the default values
+<pre name="code" class="ruby">
+\--- name:alcn
+path_to_your_image.image:
+    image.width: 300
+    image.height: 300
+    thumb.width: 100
+    thumb.height: 100
+    resize: true
+    thumb: true
+    image.polaroid: false
+    thumb.polaroid: false
+</pre>
+
+However it's possibile to set these metainfos for the whole website, through
+the use of the _init.rb_ file:
+<pre name="code" class="ruby">
+config = Webgen::WebsiteAccess.website.config
+config['sourcehandler.default_meta_info']['Thumbnailer'] = {
+      "image.width" => 300,
+      "image.height" => 300,
+      "thumb.width" => 100,
+      "thumb.height" => 100,
+      "resize" => true,
+      "thumb" => true,
+      "image.polaroid" => false,
+      "thumb.polaroid" => false
+    }
+</pre>
+
+This [blog]({relocatable: /blog.1.html}) is kind of a show-case of this functionality, in fact in that page
+there are displayed the thumbnails of the post images generated through this
+extension.
+
+## The Polaroid Effect
+
+There is a little benefit in using [RMagick][] to resize the images: it provides
+tons of effects that can be applied to them.
+One of these is the [polaroid effect][polaroid], which generates the nice images
+visible in the linked page (and in this blog, if it hasn't changed).
+
+
+## The Code
+
+<pre name="code" class="ruby">
+{include_file: {tag.includefile.filename: ext/thumbnailer.rb, tag.includefile.process_output: false}}
+</pre>
+
+Feel free to copy and adapt it to yours need, but if there are bugs report them in this blog post.
+
+[polaroid]: http://rmagick.rubyforge.org/Polaroid/polaroid.html
+[metainfo]: http://webgen.rubyforge.org/documentation/manual.html#source-metainfo
+[SourceHandler]: http://webgen.rubyforge.org/documentation/rdoc/Webgen/SourceHandler/Base.html
+[rmagick-install-doc]: http://rmagick.rubyforge.org/install-faq.html
+[Webgen]: http://webgen.rubyforge.org/
+[RMagick]: http://rmagick.rubyforge.org/
+
+--- name:summary
+
+One of the most useful feature of modern web applications is that they
+automatically resize and generates the thumbnails of the uploaded images.
+I personally hate wasting time and so I decided to add auto-resizing and
+auto-thumbnailing to my blog, which if you can't remember is
+[static]({relocatable: /blog/a_static_blog.html}) and powered by [Webgen][].
+
+[Webgen]: http://webgen.rubyforge.org/
