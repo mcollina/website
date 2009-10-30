@@ -4,7 +4,7 @@
 </p>
 
 <% if context.node.meta_info.has_key? "image" %>
-<img src="{relocatable:<%= context.node['image'] %>}" class="center"/>
+<img src="{relocatable:<%= context.node['image'] %>}" class="floatLeft"/>
 <% end %>
 
 <webgen:block name="content"/>
