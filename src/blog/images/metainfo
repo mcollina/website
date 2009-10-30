@@ -1,0 +1,9 @@
+--- name:alcn
+*.jpg:
+    image.polaroid: true
+    thumb.polaroid: true
+
+*.png:
+    image.polaroid: true
+    thumb.polaroid: true
+

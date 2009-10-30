@@ -1,4 +1,0 @@
---- name:alcn
-*.jpg:
-    image.width: 300
-    image.height: 300
