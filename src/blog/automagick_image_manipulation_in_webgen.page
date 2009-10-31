@@ -70,7 +70,7 @@ path_to_your_image.image:
     thumb.polaroid: false
 </pre>
 
-However it's possibile to set these metainfos for the whole website, through
+However it's possible to set these metainfos for the whole website, through
 the use of the _init.rb_ file:
 <pre name="code" class="ruby">
 config = Webgen::WebsiteAccess.website.config
