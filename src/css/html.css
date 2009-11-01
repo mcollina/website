@@ -104,14 +104,6 @@ ol, ul {
   padding: 0 30px;
 }
 
-ol {
-  color: #FC0;
-}
-
-ol span {
-  color: #000;
-}
-
 ul {
   list-style-image: url(../images/bg/bullet.gif);
 }
