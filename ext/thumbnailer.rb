@@ -94,12 +94,14 @@ class Thumbnailer
     if info[:polaroid]
       image.background_color = "none"
       image.format = "PNG"
-      image = image.polaroid do
-        self.fill = "white"
-      end
+      image = image.polaroid
     end
-      
-    Path::SourceIO.new { StringIO.new(image.to_blob) }
+   
+    image.strip! 
+
+    Path::SourceIO.new do 
+	StringIO.new(image.to_blob) { self.quality = 25 }
+    end
   end
 
   private
