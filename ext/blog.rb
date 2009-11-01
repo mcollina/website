@@ -6,6 +6,7 @@ class Blog
   FILTER = "blog.filter"
   POST_PER_PAGE = "blog.post_per_page"
   POSTS_ITERATOR = "posts"
+  LANGUAGES = "blog.languages"
 
   def self.setup()
     config = Webgen::WebsiteAccess.website.config
@@ -20,6 +21,8 @@ class Blog
   include Webgen
   include SourceHandler::Base
   include WebsiteAccess
+
+  alias :old_create_node :create_node
 
   def initialize #:nodoc:
     website.blackboard.add_listener(:node_meta_info_changed?, method(:meta_info_changed?))
@@ -43,11 +46,25 @@ class Blog
 
     raise "No node selected by the key: #{FILTER}" if posts.size == 0
 
-    create_blog_nodes(path, posts, meta_info[POST_PER_PAGE])
-  end
-
-  def content(node)
-    raise "Should not be called!"
+    languages = meta_info[LANGUAGES].split(",").map do |lang|
+      LanguageManager.language_for_code(lang)
+    end
+    
+    results = create_blog_nodes(path, posts, meta_info[POST_PER_PAGE])
+     
+    results.dup.each do |node|
+      languages.each do |lang|
+        unless node.in_lang(lang)
+          node[POSTS_ITERATOR].posts.map! do |n|
+            translation = create_translated_node(n, lang)
+            results << translation
+            translation
+          end
+          results << create_translated_node(node, lang.to_s)
+        end
+      end
+    end
+    results
   end
 
   private
@@ -79,7 +96,7 @@ class Blog
   end
 
   def create_translated_node(source_node, lang)
-    return source_node if source_node.in_lang(lang)
+    return nil if source_node.in_lang(lang)
 
     dest_path = Webgen::Path.lcn(source_node.path, lang)
     dest_info = source_node.meta_info.dup
@@ -105,12 +122,12 @@ class Blog
 
     # generates nodes
     created_nodes = []
-    page_sourcehandler = SourceHandler::Page.new
+    sourcehaldner = SourceHandler::Page.new
     posts_pages.each_index do |index|
       dest_path = Path.new(path.source_path.gsub(/blog$/, "#{index + 1}.html"), path.source_path) do
         StringIO.new(path.io.data)
       end
-      created_nodes << website.blackboard.invoke(:create_nodes, dest_path, page_sourcehandler)
+      created_nodes << website.blackboard.invoke(:create_nodes, dest_path, sourcehaldner)
     end
     created_nodes.flatten!
 
@@ -134,31 +151,32 @@ class Blog
     end
     created_nodes
   end
-end
 
-class PostsIterator
+  class PostsIterator
 
-  include Enumerable
+    include Enumerable
 
-  attr_reader :next_node
-  attr_reader :prev_node
+    attr_reader :next_node
+    attr_reader :prev_node
+    attr_reader :posts
 
-  def initialize(posts, prev_node, next_node)
-    @posts = posts
-    @prev_node = prev_node
-    @next_node = next_node
-  end
+    def initialize(posts, prev_node, next_node)
+      @posts = posts
+      @prev_node = prev_node
+      @next_node = next_node
+    end
 
-  def each(&block)
-    @posts.each(&block)
-  end
+    def each(&block)
+      @posts.each(&block)
+    end
 
-  def first?
-    prev_page.nil?
-  end
+    def first?
+      prev_page.nil?
+    end
 
-  def last?
-    next_node.nil?
+    def last?
+      next_node.nil?
+    end
   end
 end
 

@@ -2,9 +2,10 @@
 title: Blog
 in_menu: true
 sort_info: 20
-blog.filter: /blog/*/**/*.html
+blog.filter: /blog/**/*.html
 blog.post_per_page: 5
---- pipeline:translator,erb,tags,maruku
+blog.languages: en,it
+--- pipeline:erb,tags,maruku
 
 <% 
   posts = context.node['posts']
