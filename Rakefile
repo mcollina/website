@@ -3,6 +3,9 @@
 require 'webgen/webgentask'
 require 'net/ssh'
 require 'net/scp'
+require 'find'
+require 'facets'
+require 'facets/progressbar'
 
 task :default => :webgen
 
@@ -48,6 +51,22 @@ REMOTE_DIR = "/home/matteo/public_html"
 desc 'Upload the site'
 task :deploy => :webgen do
 
+  total_size = 0
+
+  Find.find("out") do |path|
+    if FileTest.directory?(path)
+      if File.basename(path)[0] == ?.
+        Find.prune       # Don't look any further into this directory.
+      else
+        next
+      end
+    else
+      total_size += FileTest.size(path)
+    end
+  end
+
+  puts "total_size is #{total_size}"
+
   tmpdir = REMOTE_DIR + ".tmp"
   
   puts "# Logging in to #{HOST}"
@@ -57,9 +76,15 @@ task :deploy => :webgen do
     ssh.exec! "rm -rf #{tmpdir}/"
 
     puts "# Uploading out/ to the remote #{HOST}:#{tmpdir}"
+    bar = ProgressBar.new("Upload", total_size)
+    bar.file_transfer_mode
+    old_name, old_sent = nil, 0
     ssh.scp.upload!("out", tmpdir, :recursive => true) do |ch, name, sent, total|
-      puts "#{name}: #{sent}/#{total}"
+      old_name, old_sent = name, 0 unless name == old_name
+      bar.inc(sent - old_sent)
+      old_sent = sent
     end
+    bar.finish
     
     puts "# Changing group to #{GROUP}"
     ssh.exec! "chgrp #{GROUP} #{tmpdir} -R"
