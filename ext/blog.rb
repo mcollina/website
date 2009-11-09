@@ -29,6 +29,7 @@ class Blog
   POST_PER_PAGE = "blog.post_per_page"
   POSTS_ITERATOR = "posts"
   LANGUAGES = "blog.languages"
+  TAGS = "tags"
 
   def self.setup()
     config = Webgen::WebsiteAccess.website.config
@@ -73,6 +74,26 @@ class Blog
     end
     
     results = create_blog_nodes(path, posts, meta_info[POST_PER_PAGE])
+
+    tags = {}
+    posts.each do |post|
+      post[TAGS].split(",").each do |tag|
+        tag.strip!
+        tags[tag] ||= []
+        tags[tag] << post
+      end
+    end
+
+    tags.each do |tag, nodes|
+      blog_nodes = create_blog_nodes(path, nodes, meta_info[POST_PER_PAGE]) do |index|
+        path.source_path.gsub(/blog$/, "#{tag.downcase}.#{index + 1}.html")
+      end
+      blog_nodes.each do |node|
+        node["tag"] = tag
+        node["in_menu"] = false
+      end
+      results.concat blog_nodes
+    end
      
     results.dup.each do |blog_node|
       languages.each do |lang|
@@ -131,7 +152,9 @@ class Blog
     new_node
   end
 
-  def create_blog_nodes(path, posts, posts_per_page)
+  def create_blog_nodes(path, posts, posts_per_page, &path_builder)
+    path_builder ||= lambda { |index| path.source_path.gsub(/blog$/, "#{index + 1}.html") }
+
     # order them by their creation date, newer posts first
     posts.sort! do |a,b|
       a.meta_info["created_at"] <=> b.meta_info["created_at"]
@@ -148,7 +171,7 @@ class Blog
     created_nodes = []
     sourcehaldner = SourceHandler::Page.new
     posts_pages.each_index do |index|
-      dest_path = Path.new(path.source_path.gsub(/blog$/, "#{index + 1}.html"), path.source_path) do
+      dest_path = Path.new(path_builder.call(index), path.source_path) do
         StringIO.new(path.io.data)
       end
       created_nodes << website.blackboard.invoke(:create_nodes, dest_path, sourcehaldner)

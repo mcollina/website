@@ -7,6 +7,16 @@ blog.post_per_page: 5
 blog.languages: en,it
 --- pipeline:erb,tags,maruku
 
+<%
+  unless context.node['tag'].nil?
+%>
+<blockquote class="exclamation">
+{t: {key: blog.tag, tag: <%= context.node['tag'] %> }}
+</blockquote>
+<%
+  end
+%>
+
 <% 
   posts = context.node['posts']
 

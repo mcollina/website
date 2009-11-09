@@ -3,6 +3,7 @@ title: Automagick Image Manipulation in Webgen.
 created_at: 2009-10-30 22:15:34 +01:00
 modified_at: 2009-10-30 22:15:34 +01:00
 image: /blog/images/collage.jpg
+tags: webgen, rmagick
 ---
 
 One of the most useful feature of modern web applications is that they
