@@ -6,7 +6,7 @@ javascript: [js/twitterbox.js]
 ---
 # Benvenuti
 
-<img src="matteo.jpg" class="floatRight"/>
+<img src="matteo.jpg" class="floatRight" alt="Matteo Collina" alt="Matteo Collina"/>
 
 Mi chiamo Matteo Collina, ho 25 anni e ho appena conseguito la laurea in
 ingegneria informatica. A parte questo amo la tecnologia e la vela, ma queste
@@ -18,13 +18,16 @@ me e perciò vi consiglio di visitare i link sovrastanti, o magari leggere il mi
 Ho anche un profilo su [Facebook][fb], per cui se già ci conosciamo o se vuoi
 conoscermi meglio, aggiungimi pure.
 
-<blockquote class="exclamation floatLeft">Looking for the English page?
+<blockquote class="exclamation floatLeft">
+<p>
+Looking for the English page?
 <%= context.node.link_to(context.node.in_lang("en"), :link_text => "Click here!") %>
+</p>
 </blockquote>
 
 <div id="twitter_div" style="clear: both">
 <h2 class="sidebar-title"><a href="http://twitter.com/matteocollina" id="twitter-link">Twitter Updates</a></h2>
-<ul id="twitter_update_list"></ul>
+<ul id="twitter_update_list"><li/></ul>
 </div>
 
 ## Collegamenti
