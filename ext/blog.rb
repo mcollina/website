@@ -74,15 +74,17 @@ class Blog
     
     results = create_blog_nodes(path, posts, meta_info[POST_PER_PAGE])
      
-    results.dup.each do |node|
+    results.dup.each do |blog_node|
       languages.each do |lang|
-        unless node.in_lang(lang)
-          node[POSTS_ITERATOR].posts.map! do |n|
+        unless blog_node.in_lang(lang)
+          blog_node = create_translated_node(blog_node, lang.to_s)
+          blog_node[POSTS_ITERATOR] = blog_node[POSTS_ITERATOR].dup
+          blog_node[POSTS_ITERATOR].posts.map! do |n|
             translation = create_translated_node(n, lang)
             results << translation
             translation
           end
-          results << create_translated_node(node, lang.to_s)
+          results << blog_node
         end
       end
     end
@@ -118,7 +120,7 @@ class Blog
   end
 
   def create_translated_node(source_node, lang)
-    return nil if source_node.in_lang(lang)
+    return source_node.in_lang(lang) if source_node.in_lang(lang)
 
     dest_path = Webgen::Path.lcn(source_node.path, lang)
     dest_info = source_node.meta_info.dup
@@ -199,6 +201,12 @@ class Blog
     def last?
       next_node.nil?
     end
+
+    def dup
+      PostsIterator.new(posts.dup, prev_node, next_node)
+    end
+
+    alias :clone :dup
   end
 end
 
