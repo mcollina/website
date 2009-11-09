@@ -65,8 +65,6 @@ task :deploy => :webgen do
     end
   end
 
-  puts "total_size is #{total_size}"
-
   tmpdir = REMOTE_DIR + ".tmp"
   
   puts "# Logging in to #{HOST}"
