@@ -83,16 +83,26 @@ class Blog
         tags[tag] << post
       end
     end
+    
+    main_tags_pages = []
 
     tags.each do |tag, nodes|
       blog_nodes = create_blog_nodes(path, nodes, meta_info[POST_PER_PAGE]) do |index|
         path.source_path.gsub(/blog$/, "#{tag.downcase}.#{index + 1}.html")
       end
+
+      main_tags_pages << Tag.new(tag, blog_nodes.first, nodes.size)
+
       blog_nodes.each do |node|
         node["tag"] = tag
         node["in_menu"] = false
       end
+
       results.concat blog_nodes
+    end
+
+    results.each do |blog_node|
+      blog_node[TAGS] = main_tags_pages.dup
     end
      
     results.dup.each do |blog_node|
@@ -230,6 +240,19 @@ class Blog
     end
 
     alias :clone :dup
+  end
+
+  class Tag
+
+    attr_reader :name
+    attr_reader :node
+    attr_reader :size
+
+    def initialize(name, node, size)
+      @name = name
+      @node = node
+      @size = size
+    end
   end
 end
 
