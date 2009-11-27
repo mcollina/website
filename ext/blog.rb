@@ -30,6 +30,7 @@ class Blog
   POSTS_ITERATOR = "posts"
   LANGUAGES = "blog.languages"
   TAGS = "tags"
+  TAG_CLOUD = "tag_cloud"
 
   def self.setup()
     config = Webgen::WebsiteAccess.website.config
@@ -122,6 +123,21 @@ class Blog
     results
   end
 
+  def self.tags(blog_node_path)
+    blog_nodes = website.tree.node_access[:acn][blog_node_path]
+
+    raise "There is no node: #{blog_node_path}" if blog_nodes.empty?
+
+    blog_nodes.first[TAGS]
+  end
+
+  def self.tag_cloud(blog_node_path, base_css=nil)
+    tags = tags(blog_node_path)
+    tag_cloud = TagCloud.new(tags)
+    tag_cloud.klass = base_css
+    tag_cloud
+  end
+
   private
 
   # Checks if the meta information provided by the file in Webgen Page Format changed.
@@ -209,6 +225,8 @@ class Blog
     created_nodes
   end
 
+  private
+
   class PostsIterator
 
     include Enumerable
@@ -252,6 +270,40 @@ class Blog
       @name = name
       @node = node
       @size = size
+    end
+  end
+
+  # Create a Tag Cloud from an array of tags
+  class TagCloud
+    attr_accessor :klass
+
+    def initialize(tags)
+      @tags = tags
+      @cloud = nil
+    end
+
+    def font_ratio()
+      min, max = 1000000, -1000000
+      @tags.each do |tag|
+        max = tag.size if tag.size > max
+        min = tag.size if tag.size < min
+      end
+      18.0 / (max - min)
+    end
+
+    def build
+      cloud = String.new
+      ratio = font_ratio()
+      @tags.each do |tag|
+        font_size = (9 + (tag.size * ratio))
+        cloud << %Q{<span#{" class=\"" + klass + "_span\"" unless klass.nil? }><a href="#"#{" class=\"" + klass + "\"" unless klass.nil? } style="font-size:#{font_size}pt;">#{tag.name}</a></span> }
+      end
+      cloud
+    end
+
+    def to_s
+      return @cloud unless @cloud.nil?
+      @cloud = build
     end
   end
 end
