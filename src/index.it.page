@@ -30,6 +30,10 @@ Looking for the English page?
 <ul id="twitter_update_list"><li/></ul>
 </div>
 
+<div class="floatRight tagCloud">
+<%= Blog.tag_cloud(context.node, "/blog.1.html", :line_length => 3) %>
+</div>
+
 ## Collegamenti
 <p>
 <a href="http://www.antiifcampaign.com">

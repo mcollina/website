@@ -263,3 +263,15 @@ a img {
   margin-top: -2em;
 }
 
+.tagCloud {
+  margin: 10px 15px;
+  padding: 0.5em 2.5em;
+
+  border: 2px solid #470052;
+}
+
+.tagCloud a {
+    text-decoration: none;
+    text-transform: lowercase;
+}
+

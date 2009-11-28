@@ -28,6 +28,10 @@ Cerchi una pagina in italiano?
 <ul id="twitter_update_list"><li/></ul>
 </div>
 
+<div class="floatRight tagCloud">
+<%= Blog.tag_cloud(context.node, "/blog.1.html", :line_length => 3) %>
+</div>
+
 ## Links
 <p>
 <a href="http://www.antiifcampaign.com">
@@ -35,6 +39,7 @@ Cerchi una pagina in italiano?
 src="http://www.antiifcampaign.com/_export/anti-if-campaign-ive-joined.gif" 
 alt="I have joined Anti-IF Campaign" /></a>
 </p>
+
 
 [cv]: {relocatable:curriculum.pdf}
 [lp]: https://launchpad.net/~matteo-collina

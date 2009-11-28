@@ -20,8 +20,6 @@
 # WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
-
-require 'stringio'
   
 class Blog
 
@@ -97,6 +95,7 @@ class Blog
       blog_nodes.each do |node|
         node["tag"] = tag
         node["in_menu"] = false
+        node["title"] = tag
       end
 
       results.concat blog_nodes
@@ -116,6 +115,13 @@ class Blog
             results << translation
             translation
           end
+
+          blog_node[TAGS].map! do |tag|
+            tag = tag.dup
+            tag.node = create_translated_node(tag.node, lang)
+            tag
+          end
+
           results << blog_node
         end
       end
@@ -131,11 +137,8 @@ class Blog
     blog_nodes.first[TAGS]
   end
 
-  def self.tag_cloud(blog_node_path, base_css=nil)
-    tags = tags(blog_node_path)
-    tag_cloud = TagCloud.new(tags)
-    tag_cloud.klass = base_css
-    tag_cloud
+  def self.tag_cloud(current_node, blog_node_path, options={})
+    TagCloud.new(current_node, tags(blog_node_path), options)
   end
 
   private
@@ -262,42 +265,62 @@ class Blog
 
   class Tag
 
-    attr_reader :name
-    attr_reader :node
-    attr_reader :size
+    attr_accessor :name, :node, :size
 
-    def initialize(name, node, size)
+    def initialize(name=nil, node=nil, size=nil)
       @name = name
       @node = node
       @size = size
+    end
+
+    def dup
+      Tag.new(name, node, size)
     end
   end
 
   # Create a Tag Cloud from an array of tags
   class TagCloud
-    attr_accessor :klass
+    attr_accessor :css_class, :base_tag_size, :line_length
+    attr_accessor :node, :tags
 
-    def initialize(tags)
-      @tags = tags
+    def initialize(node, tags, options={})
+      @tags = tags.sort { |a,b| a.name <=> b.name }
       @cloud = nil
+      @css_class = options[:css_class]
+      @base_tag_size = options[:base_tag_size] || 5
+      @line_length = options[:line_length] || 4
+      @node = node
     end
 
-    def font_ratio()
+    def font_ratio
       min, max = 1000000, -1000000
-      @tags.each do |tag|
+      tags.each do |tag|
         max = tag.size if tag.size > max
         min = tag.size if tag.size < min
       end
-      18.0 / (max - min)
+      18 / (max - min)
     end
 
     def build
+
       cloud = String.new
-      ratio = font_ratio()
-      @tags.each do |tag|
-        font_size = (9 + (tag.size * ratio))
-        cloud << %Q{<span#{" class=\"" + klass + "_span\"" unless klass.nil? }><a href="#"#{" class=\"" + klass + "\"" unless klass.nil? } style="font-size:#{font_size}pt;">#{tag.name}</a></span> }
+      i = 0
+      tags.each do |tag|
+        cloud << "<div>" if i % line_length == 0
+        i += 1
+
+        font_size = (base_tag_size + (tag.size * font_ratio))
+        cloud << %Q{<span#{" class=\"" + css_class + "\"" unless css_class.nil? }>}
+        cloud << %Q{<a href="#{node.route_to(tag.node)}" }
+        cloud << %Q{style="font-size: #{font_size}pt;">#{tag.name}</a></span>}
+
+        cloud << "</div>" if i % line_length == 0
+
+        cloud << "\n"
       end
+
+      cloud << "</div>" if i % line_length != 0
+
       cloud
     end
 
