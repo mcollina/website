@@ -29,7 +29,7 @@ Cerchi una pagina in italiano?
 </div>
 
 <div class="floatRight tagCloud">
-<%= Blog.tag_cloud(context.node, "/blog.1.html", :line_length => 3) %>
+<%= Blog.tag_cloud(context.node, "/blog.html", :line_length => 3) %>
 </div>
 
 ## Links

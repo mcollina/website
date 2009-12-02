@@ -21,6 +21,8 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 # OTHER DEALINGS IN THE SOFTWARE.
   
+# Adaptations by Damien Pollet, Nov/Dec 2009
+  
 class Blog
 
   FILTER = "blog.filter"
@@ -63,9 +65,8 @@ class Blog
 
     # select only blog's posts
     posts = website.tree.node_access[:path].values.select do |n|
-      Webgen::Path.match(n.path,meta_info[FILTER])
+      Webgen::Path.match(n.path, meta_info[FILTER])
     end
-
     raise "No node selected by the key: #{FILTER}" if posts.size == 0
 
     languages = meta_info[LANGUAGES].split(",").map do |lang|
@@ -76,18 +77,21 @@ class Blog
 
     tags = {}
     posts.each do |post|
-      post[TAGS].split(",").each do |tag|
+      next if post[TAGS].nil?
+      post[TAGS] = post[TAGS].split(",")
+      post[TAGS].each do |tag|
         tag.strip!
         tags[tag] ||= []
         tags[tag] << post
       end
     end
     
-    main_tags_pages = []
+    main_tags_pages = TagsContainer.new
 
     tags.each do |tag, nodes|
-      blog_nodes = create_blog_nodes(path, nodes, meta_info[POST_PER_PAGE]) do |index|
-        path.source_path.gsub(/blog$/, "#{tag.downcase}.#{index + 1}.html")
+      blog_nodes = create_blog_nodes(path, nodes, meta_info[POST_PER_PAGE]) do |index,total|
+        suffix = index == total ? "#{tag.downcase}.html" : "#{tag.downcase}.#{index + 1}.html"
+        path.source_path.gsub(/blog$/, suffix)
       end
 
       main_tags_pages << Tag.new(tag, blog_nodes.first, nodes.size)
@@ -95,7 +99,7 @@ class Blog
       blog_nodes.each do |node|
         node["tag"] = tag
         node["in_menu"] = false
-        node["title"] = tag
+        node["title"] = "Posts tagged '#{tag}'"
       end
 
       results.concat blog_nodes
@@ -129,12 +133,11 @@ class Blog
     results
   end
 
-  def self.tags(blog_node_path)
-    blog_nodes = website.tree.node_access[:acn][blog_node_path]
+  def self.tags(node_path)
+    nodes = website.tree.node_access[:acn][node_path]
+    raise "There is no node: #{node_path}" if nodes.empty?
 
-    raise "There is no node: #{blog_node_path}" if blog_nodes.empty?
-
-    blog_nodes.first[TAGS]
+    nodes.first[TAGS]
   end
 
   def self.tag_cloud(current_node, blog_node_path, options={})
@@ -182,7 +185,10 @@ class Blog
   end
 
   def create_blog_nodes(path, posts, posts_per_page, &path_builder)
-    path_builder ||= lambda { |index| path.source_path.gsub(/blog$/, "#{index + 1}.html") }
+    path_builder ||= lambda { |index,total|
+      suffix = index == total ? "html" : "#{index + 1}.html"
+      path.source_path.gsub(/blog$/, suffix)
+    }
 
     # order them by their creation date, newer posts first
     posts.sort! do |a,b|
@@ -198,12 +204,12 @@ class Blog
 
     # generates nodes
     created_nodes = []
-    sourcehaldner = SourceHandler::Page.new
+    sourcehandler = SourceHandler::Page.new
     posts_pages.each_index do |index|
-      dest_path = Path.new(path_builder.call(index), path.source_path) do
+      dest_path = Path.new(path_builder.call(index, posts_pages.size-1), path.source_path) do
         StringIO.new(path.io.data)
       end
-      created_nodes << website.blackboard.invoke(:create_nodes, dest_path, sourcehaldner)
+      created_nodes << website.blackboard.invoke(:create_nodes, dest_path, sourcehandler)
     end
     created_nodes.flatten!
 
@@ -249,7 +255,7 @@ class Blog
     end
 
     def first?
-      prev_page.nil?
+      prev_node.nil?
     end
 
     def last?
@@ -275,6 +281,60 @@ class Blog
 
     def dup
       Tag.new(name, node, size)
+    end
+  end
+
+  class TagsContainer
+
+    include Enumerable
+
+    def initialize(tags=[])
+      fill(tags)
+    end
+
+    def each(&block)
+      @tags.values.each(&block)
+    end
+
+    def tags
+      @tags.values
+    end
+
+    def tags=(tags)
+      fill(tags)
+    end
+
+    def [](name)
+      @tags[name]
+    end
+
+    def dup
+      TagsContainer.new(@tags.values)
+    end
+
+    def add(tag)
+      @tags[tag.name] = tag
+    end
+
+    def delete(tag)
+      @tags.delete(tag.name)
+    end
+
+    alias :<< :add
+
+    def map!(&block)
+      self.tags = map(&block)
+    end
+
+    private
+    def fill(tags)
+      reset
+      tags.each { |tag| add(tag) }
+      tags
+    end
+
+    def reset()
+      @tags = Hash.new
     end
   end
 

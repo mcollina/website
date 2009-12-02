@@ -87,7 +87,7 @@ config['sourcehandler.default_meta_info']['Thumbnailer'] = {
     }
 </pre>
 
-This [blog]({relocatable: /blog.1.html}) is kind of a show-case of this functionality, in fact in that page
+This [blog]({relocatable: /blog.html}) is kind of a show-case of this functionality, in fact in that page
 there are displayed the thumbnails of the post images generated through this
 extension.
 
