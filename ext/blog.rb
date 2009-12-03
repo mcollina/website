@@ -112,20 +112,10 @@ class Blog
     results.dup.each do |blog_node|
       languages.each do |lang|
         unless blog_node.in_lang(lang)
-          blog_node = create_translated_node(blog_node, lang.to_s)
-          blog_node[POSTS_ITERATOR] = blog_node[POSTS_ITERATOR].dup
-          blog_node[POSTS_ITERATOR].posts.map! do |n|
-            translation = create_translated_node(n, lang)
-            results << translation
-            translation
-          end
-	  
-	  blog_node[TAGS] = blog_node[TAGS].dup
-          blog_node[TAGS].map! do |tag|
-            tag = tag.dup
-            tag.node = create_translated_node(tag.node, lang)
-            tag
-          end
+          blog_node = Blog.create_translated_node(blog_node, lang.to_s)
+          
+	  blog_node[POSTS_ITERATOR] = blog_node[POSTS_ITERATOR].translate(lang)
+	  blog_node[TAGS] = blog_node[TAGS].translate(lang)
 
           results << blog_node
         end
@@ -143,6 +133,18 @@ class Blog
 
   def self.tag_cloud(current_node, blog_node_path, options={})
     TagCloud.new(current_node, tags(blog_node_path, current_node.lang), options)
+  end
+
+  def self.create_translated_node(source_node, lang)
+    return source_node.in_lang(lang) if source_node.in_lang(lang)
+
+    dest_path = Webgen::Path.lcn(source_node.path, lang)
+    dest_info = source_node.meta_info.dup
+    dest_info["lang"] = lang
+
+    new_node = Webgen::Node.new(source_node.parent, dest_path, source_node.cn, dest_info)
+    new_node.node_info.merge!(source_node.node_info)
+    new_node
   end
 
   private
@@ -171,18 +173,6 @@ class Blog
       node.flag(:dirty) unless path && !path.changed?
     end
 
-  end
-
-  def create_translated_node(source_node, lang)
-    return source_node.in_lang(lang) if source_node.in_lang(lang)
-
-    dest_path = Webgen::Path.lcn(source_node.path, lang)
-    dest_info = source_node.meta_info.dup
-    dest_info["lang"] = lang
-
-    new_node = Webgen::Node.new(source_node.parent, dest_path, source_node.cn, dest_info)
-    new_node.node_info.merge!(source_node.node_info)
-    new_node
   end
 
   def create_blog_nodes(path, posts, posts_per_page, &path_builder)
@@ -268,6 +258,17 @@ class Blog
     end
 
     alias :clone :dup
+
+    def translate!(lang)
+      posts.map! do |n|
+      	Blog.create_translated_node(n, lang)
+      end
+      self
+    end
+    
+    def translate(lang)
+      dup.translate!(lang)
+    end
   end
 
   class Tag
@@ -310,7 +311,8 @@ class Blog
     end
 
     def dup
-      TagsContainer.new(@tags.values)
+      new_tags = tags.map { |tag| tag.dup }
+      TagsContainer.new(new_tags)
     end
 
     def add(tag)
@@ -325,6 +327,17 @@ class Blog
 
     def map!(&block)
       self.tags = map(&block)
+    end
+
+    def translate!(lang)
+      each do |tag|		
+        tag.node = Blog.create_translated_node(tag.node, lang)
+      end
+      self
+    end
+
+    def translate(lang)
+      dup.translate!(lang)
     end
 
     private
