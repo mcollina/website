@@ -119,7 +119,8 @@ class Blog
             results << translation
             translation
           end
-
+	  
+	  blog_node[TAGS] = blog_node[TAGS].dup
           blog_node[TAGS].map! do |tag|
             tag = tag.dup
             tag.node = create_translated_node(tag.node, lang)
