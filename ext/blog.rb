@@ -99,7 +99,7 @@ class Blog
       blog_nodes.each do |node|
         node["tag"] = tag
         node["in_menu"] = false
-        node["title"] = "Posts tagged '#{tag}'"
+        node["title"] = tag.downcase
       end
 
       results.concat blog_nodes
@@ -114,8 +114,8 @@ class Blog
         unless blog_node.in_lang(lang)
           blog_node = Blog.create_translated_node(blog_node, lang.to_s)
           
-	  blog_node[POSTS_ITERATOR] = blog_node[POSTS_ITERATOR].translate(lang)
-	  blog_node[TAGS] = blog_node[TAGS].translate(lang)
+          blog_node[POSTS_ITERATOR] = blog_node[POSTS_ITERATOR].translate(lang)
+          blog_node[TAGS] = blog_node[TAGS].translate(lang)
 
           results << blog_node
         end
@@ -126,7 +126,7 @@ class Blog
 
   def self.tags(node_path, lang=website.config["website.lang"]) 
     nodes = website.tree.node_access[:acn][node_path]
-    raise "There is no node: #{node_path}" if nodes.empty?
+    raise "There is no node: #{node_path}" if nodes.nil? or nodes.empty?
 
     nodes.first.in_lang(lang)[TAGS]
   end

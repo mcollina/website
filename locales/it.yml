@@ -9,6 +9,7 @@ it:
       prev: "Articoli Successivi"
     written_at: "Scritto da {{author}} il %d %B %Y."
     tag: "Hai cercato tutti gli articoli taggati con <b>{{tag}}</b>."
+    tags: Tag
 
 
   analytics:
