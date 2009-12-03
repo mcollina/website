@@ -134,15 +134,15 @@ class Blog
     results
   end
 
-  def self.tags(node_path)
+  def self.tags(node_path, lang=website.config["website.lang"]) 
     nodes = website.tree.node_access[:acn][node_path]
     raise "There is no node: #{node_path}" if nodes.empty?
 
-    nodes.first[TAGS]
+    nodes.first.in_lang(lang)[TAGS]
   end
 
   def self.tag_cloud(current_node, blog_node_path, options={})
-    TagCloud.new(current_node, tags(blog_node_path), options)
+    TagCloud.new(current_node, tags(blog_node_path, current_node.lang), options)
   end
 
   private
