@@ -265,16 +265,34 @@ class Blog
 
   class Tag
 
-    attr_accessor :name, :node, :size
+    include Webgen
+    include WebsiteAccess
+
+    attr_accessor :name, :size
 
     def initialize(name=nil, node=nil, size=nil)
-      @name = name
-      @node = node
-      @size = size
+      self.name = name
+      self.node = node
+      self.size = size
+    end
+
+    def node
+      node = website.tree.node_access[:alcn][@node_alcn]
+      raise "There is no node: #{blog_node_path}" unless node
+      node
+    end
+
+    def node=(node)
+      if node.respond_to?(:alcn)
+        @node_alcn = node.alcn
+      else
+        @node_alcn = node
+      end
+      node
     end
 
     def dup
-      Tag.new(name, node, size)
+      Tag.new(@name, @node_alcn, @size)
     end
   end
 
