@@ -9,6 +9,7 @@ en:
       prev: "Following Articles"
     written_at: "Written by {{author}} on %B %d, %Y."
     tag: "You've searched all the articles tagged with <b>{{tag}}</b>."
+    tags: Tags
 
   analytics:
     exclusion:
