@@ -1,9 +1,8 @@
 <h1>{title:}</h1>
 <%
-    current_tags = context.node["tags"]
-    tags = Blog.tags("/blog.html", context.node.lang)
+    current_tags = context.node["tag nodes"]
     unless current_tags.nil? or current_tags.size == 0
-      tags_string = current_tags.map { |tag_name| context.node.link_to(tags[tag_name].node) }
+      tags_string = current_tags.map { |tag| tag.link_from(context.node) }
       tags_string = tags_string.join(", ")
 %>
 <p class="author floatRight">

@@ -31,6 +31,7 @@ class Blog
   LANGUAGES = "blog.languages"
   TAGS = "tags"
   TAG_CLOUD = "tag_cloud"
+  TAG_NODES = "tag nodes"
 
   def self.setup()
     config = Webgen::WebsiteAccess.website.config
@@ -86,7 +87,7 @@ class Blog
       end
     end
     
-    main_tags_pages = TagsContainer.new
+    tags_container = []
 
     tags.each do |tag, nodes|
       blog_nodes = create_blog_nodes(path, nodes, meta_info[POST_PER_PAGE]) do |index,total|
@@ -94,7 +95,7 @@ class Blog
         path.source_path.gsub(/blog$/, suffix)
       end
 
-      main_tags_pages << Tag.new(tag, blog_nodes.first, nodes.size)
+      tags_container << Tag.new(tag, blog_nodes.first, nodes.size)
 
       blog_nodes.each do |node|
         node["tag"] = tag
@@ -105,8 +106,12 @@ class Blog
       results.concat blog_nodes
     end
 
+    posts.each do |post|
+      post[TAG_NODES] = tags_container.select { |tag| post[TAGS].include? tag.name }
+    end
+
     results.each do |blog_node|
-      blog_node[TAGS] = main_tags_pages.dup
+      blog_node[TAGS] = tags_container.dup
     end
      
     results.dup.each do |blog_node|
@@ -115,7 +120,6 @@ class Blog
           blog_node = Blog.create_translated_node(blog_node, lang.to_s)
           
           blog_node[POSTS_ITERATOR] = blog_node[POSTS_ITERATOR].translate(lang)
-          blog_node[TAGS] = blog_node[TAGS].translate(lang)
 
           results << blog_node
         end
@@ -276,7 +280,7 @@ class Blog
     include Webgen
     include WebsiteAccess
 
-    attr_accessor :name, :size
+    attr_accessor :name, :size, :node_acn
 
     def initialize(name=nil, node=nil, size=nil)
       self.name = name
@@ -285,88 +289,33 @@ class Blog
     end
 
     def node
-      node = website.tree.node_access[:alcn][@node_alcn]
-      raise "There is no node: #{blog_node_path}" unless node
-      node
+      nodes = website.tree.node_access[:acn][@node_acn]
+      raise "There is no node: #{blog_node_path}" if nodes.nil? or nodes.empty?
+      nodes.first
     end
 
     def node=(node)
-      if node.respond_to?(:alcn)
-        @node_alcn = node.alcn
+      if node.respond_to?(:acn)
+        @node_acn = node.acn
       else
-        @node_alcn = node
+        @node_acn = node
       end
       node
     end
 
-    def dup
-      Tag.new(@name, @node_alcn, @size)
-    end
-  end
-
-  class TagsContainer
-
-    include Enumerable
-
-    def initialize(tags=[])
-      fill(tags)
+    def link_from(current_node, args=[])
+      current_node.link_to(node.in_lang(current_node.lang), *args)
     end
 
-    def each(&block)
-      @tags.values.each(&block)
-    end
+    def ==(other)
+      return false unless other.respond_to? :node_acn or
+        other.respond_to? :name or other.respond_to? :size
 
-    def tags
-      @tags.values
-    end
-
-    def tags=(tags)
-      fill(tags)
-    end
-
-    def [](name)
-      @tags[name]
+      name == other.name and node_acn == other.node_acn and size == other.size
     end
 
     def dup
-      new_tags = tags.map { |tag| tag.dup }
-      TagsContainer.new(new_tags)
-    end
-
-    def add(tag)
-      @tags[tag.name] = tag
-    end
-
-    def delete(tag)
-      @tags.delete(tag.name)
-    end
-
-    alias :<< :add
-
-    def map!(&block)
-      self.tags = map(&block)
-    end
-
-    def translate!(lang)
-      each do |tag|		
-        tag.node = Blog.create_translated_node(tag.node, lang)
-      end
-      self
-    end
-
-    def translate(lang)
-      dup.translate!(lang)
-    end
-
-    private
-    def fill(tags)
-      reset
-      tags.each { |tag| add(tag) }
-      tags
-    end
-
-    def reset()
-      @tags = Hash.new
+      Tag.new(@name, @node_acn, @size)
     end
   end
 
@@ -403,7 +352,7 @@ class Blog
 
         font_size = (base_tag_size + (tag.size * font_ratio))
         cloud << %Q{<span#{" class=\"" + css_class + "\"" unless css_class.nil? }>}
-        cloud << %Q{<a href="#{node.route_to(tag.node)}" }
+        cloud << %Q{<a href="#{node.route_to(tag.node.in_lang(node.lang))}" }
         cloud << %Q{style="font-size: #{font_size}pt;">#{tag.name}</a></span>}
 
         cloud << "</div>" if i % line_length == 0
