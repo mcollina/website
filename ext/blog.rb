@@ -196,6 +196,12 @@ class Blog
       posts_pages << [] if posts_pages.last.size >= posts_per_page
       posts_pages.last.unshift post
     end
+    
+    # merge most recent page into the previous one (so its size stays at least posts_per_page)
+    if posts_pages.size >= 2 and posts_pages.last.size < posts_per_page
+      latest_posts = posts_pages.pop
+      posts_pages.last.unshift *latest_posts
+    end
 
     # generates nodes
     created_nodes = []
