@@ -23,7 +23,7 @@
   
 # Adaptations by Damien Pollet, Nov/Dec 2009
   
-class Blog
+class Blog < Webgen::SourceHandler::Page
 
   FILTER = "blog.filter"
   POST_PER_PAGE = "blog.post_per_page"
@@ -47,7 +47,7 @@ class Blog
   include SourceHandler::Base
   include WebsiteAccess
 
-  alias :old_create_node :create_node
+  alias :create_page_node :create_node
 
   def initialize #:nodoc:
     website.blackboard.add_listener(:node_meta_info_changed?, method(:meta_info_changed?))
@@ -205,12 +205,14 @@ class Blog
 
     # generates nodes
     created_nodes = []
-    sourcehandler = SourceHandler::Page.new
     posts_pages.each_index do |index|
+      data = path.io.data
       dest_path = Path.new(path_builder.call(index, posts_pages.size-1), path.source_path) do
-        StringIO.new(path.io.data)
+          StringIO.new(data)
       end
-      created_nodes << website.blackboard.invoke(:create_nodes, dest_path, sourcehandler)
+      created_nodes << website.blackboard.invoke(:create_nodes, dest_path, self) do |path|
+        create_page_node(path)
+      end
     end
     created_nodes.flatten!
 
