@@ -37,7 +37,7 @@ class Blog < Webgen::SourceHandler::Page
     config = Webgen::WebsiteAccess.website.config
 
     config.patterns('Blog' => ['**/*.blog'])
-    config['sourcehandler.invoke'][5] << 'Blog'
+    config['sourcehandler.invoke'][9] << 'Blog'
     config['sourcehandler.default_meta_info']['Blog'] = {
       Blog::POST_PER_PAGE => 5
     }
@@ -50,7 +50,7 @@ class Blog < Webgen::SourceHandler::Page
   alias :create_page_node :create_node
 
   def initialize #:nodoc:
-    website.blackboard.add_listener(:node_meta_info_changed?, method(:meta_info_changed?))
+    website.blackboard.add_listener(:node_changed?, method(:node_changed?))
   end
 
   def create_node(path)
@@ -78,7 +78,7 @@ class Blog < Webgen::SourceHandler::Page
 
     tags = {}
     posts.each do |post|
-      next if post[TAGS].nil?
+      next if post[TAGS].nil? or post[TAGS].respond_to? :to_ary
       post[TAGS] = post[TAGS].split(",")
       post[TAGS].each do |tag|
         tag.strip!
@@ -116,13 +116,10 @@ class Blog < Webgen::SourceHandler::Page
      
     results.dup.each do |blog_node|
       languages.each do |lang|
-        unless blog_node.in_lang(lang)
-          blog_node = Blog.create_translated_node(blog_node, lang.to_s)
-          
-          blog_node[POSTS_ITERATOR] = blog_node[POSTS_ITERATOR].translate(lang)
-
-          results << blog_node
-        end
+        blog_node = Blog.create_translated_node(blog_node, lang.to_s)
+        blog_node[POSTS_ITERATOR] = blog_node[POSTS_ITERATOR].translate(lang)
+        blog_node[POSTS_ITERATOR].each { |post| results << post }
+        results << blog_node
       end
     end
     results
@@ -153,28 +150,29 @@ class Blog < Webgen::SourceHandler::Page
 
   private
 
-  # Checks if the meta information provided by the file in Webgen Page Format changed.
-  # Or if the
-  def meta_info_changed?(node)
+  def node_changed?(node)
     return unless node.node_info.has_key? :created_by_blog
 
     path = website.blackboard.invoke(:source_paths)[node.node_info[:src]]
       
     if !path
-      node.flag(:dirty)
+      node.flag(:dirty, :dirty_meta_info, :reinit) 
       return
     end
 
     old_mi = node.node_info[:sh_page_node_mi]
     new_mi = Webgen::Page.meta_info_from_data(path.io.data)
     if old_mi && old_mi != new_mi
-      node.flag(:dirty)
+      node.flag(:dirty, :dirty_meta_info, :reinit)
       return
     end
 
     node[POSTS_ITERATOR].each do |post|
       path = website.blackboard.invoke(:source_paths)[post.node_info[:src]]
-      node.flag(:dirty) unless path && !path.changed?
+      if path.nil? or path.changed?
+        node.flag(:dirty, :dirty_meta_info, :reinit)
+        return 
+      end
     end
 
   end
@@ -298,7 +296,7 @@ class Blog < Webgen::SourceHandler::Page
 
     def node
       nodes = website.tree.node_access[:acn][@node_acn]
-      raise "There is no node: #{blog_node_path}" if nodes.nil? or nodes.empty?
+      raise "There is no node: #{node_acn}" if nodes.nil? or nodes.empty?
       nodes.first
     end
 
